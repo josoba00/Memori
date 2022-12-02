@@ -1,0 +1,7 @@
+/bin/
+/target/
+/.settings/
+/.project/
+/src/main/webapp/WEB-INF/.faces-config.xml.jsfdia
+Dockerfile
+/.idea/
