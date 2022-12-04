@@ -1,0 +1,3 @@
+[submodule "wiki"]
+	path = wiki
+	url = https://git.uibk.ac.at/informatik/qe/swapsws22/group1/g1t2.wiki.git
