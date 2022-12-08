@@ -14,4 +14,4 @@ If you want to modify the wiki repo after cloning the repo please follow these s
 After these two commands navigate into the wiki directory and make sure you `checkout` the main branch
 as the submodule initialization will create a detached `HEAD` branch for you to start on.
 
-If you are working on a feature and have documentation to add to the wiki please refer to our [wiki documentation workflow](../../wikis/wiki_documentation_workflow).
+If you are working on a feature and have documentation to add to the wiki please refer to our [wiki documentation workflow](https://git.uibk.ac.at/informatik/qe/swapsws22/group1/g1t2/-/wikis/wiki_documantation_workflow).
