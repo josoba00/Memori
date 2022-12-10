@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+                template="/WEB-INF/templates/main.xhtml">
+
+
+    <ui:define name ="content" style="margin-top: 20px; margin-left: 20px;">
+        <h:form id="menu-form" >
+            <div class="card">
+                <p:tabMenu activeIndex="#{param.i}">
+                    <p:menuitem value="Home" outcome="/secured/home.xhtml" icon="pi pi-fw pi-home">
+                        <f:param name="i" value="0"/>
+                    </p:menuitem>
+                    <p:menuitem value="Saved" outcome="/secured/home.xhtml">
+                        <f:param name="i" value="1"/>
+                    </p:menuitem>
+                    <p:menuitem value="Trash" outcome="/secured/home.xhtml">
+                        <f:param name="i" value="2"/>
+                    </p:menuitem>
+                </p:tabMenu>
+            </div>
+        </h:form>
+
+        <div class="decks">
+
+            <h:form rendered="#{param.i==0 || param.i==null}">
+                <p:dataTable var="deck" value="#{deckBean.personalDecks}" widgetVar="personalDeckTable"
+                             emptyMessage="No decks found"
+                             filteredValue="#{deckBean.filteredPersonalDecks}"
+                             globalFilterFunction="#{deckBean.globalFilterFunction}"
+                             paginator="true" rows="15"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
+                    <f:facet name="header">
+                        <div class="flex justify-content-end">
+                            <p:inputText id="globalFilter1" onkeyup="PF('personalDeckTable').filter()" style="width:300px"
+                                         placeholder="Search" />
+                        </div>
+                    </f:facet>
+                    <p:column headerText="Deck">
+                        <h:outputText style="vertical-align: middle; margin-left: .5rem" value="test"/>
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+
+            <h:form id="savedDecks" rendered="#{param.i==1}">
+                <p:dataTable var="deck" value="#{deckBean.savedDecks}" widgetVar="personalDeckTable"
+                             emptyMessage="No decks found"
+                             filteredValue="#{deckBean.filteredSavedDecks}"
+                             globalFilterFunction="#{deckBean.globalFilterFunction}"
+                             paginator="true" rows="15"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
+                    <f:facet name="header">
+                        <div class="flex justify-content-end">
+                            <p:inputText id="globalFilter2" onkeyup="PF('personalDeckTable').filter()" style="width:300px"
+                                         placeholder="Search" />
+                        </div>
+                    </f:facet>
+                    <p:column headerText="Deck">
+                        <h:outputText style="vertical-align: middle; margin-left: .5rem" value="test"/>
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>
