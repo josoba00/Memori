@@ -1,0 +1,153 @@
+package at.qe.skeleton.model;
+
+import org.springframework.data.domain.Persistable;
+
+import java.util.Date;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+@Entity
+@Table(name = "deck")
+public class Deck implements DeckInterface, Persistable<Long>, Serializable, Comparable<Deck> {
+  
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+  
+  private String title;
+  
+  private String description;
+  
+  @ManyToOne(fetch = FetchType.LAZY)
+  private User creator;
+  
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date creationDate;
+  
+  @Enumerated(EnumType.STRING)
+  private DeckStatus status;
+  
+  @OneToMany(
+      mappedBy = "container",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      fetch = FetchType.LAZY
+  )
+  private Set<Card> content = new HashSet<>();
+  
+  @ManyToMany(
+      mappedBy = "bookmarks",
+      fetch = FetchType.LAZY
+  )
+  private Set<User> bookmarkedBy = new HashSet<>();
+  
+  public String getTitle() {
+    return title;
+  }
+  
+  public void setTitle(String title) {
+    this.title = title;
+  }
+  
+  public String getDescription() {
+    return description;
+  }
+  
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public Date getCreationDate() {
+    return creationDate;
+  }
+  
+  public void setCreationDate(Date creationDate) {
+    this.creationDate = creationDate;
+  }
+  
+  public User getCreator() {
+    return creator;
+  }
+  
+  public void setCreator(User creator) {
+    this.creator = creator;
+  }
+  
+  public DeckStatus getStatus() {
+    return status;
+  }
+  
+  public void setStatus(DeckStatus status) {
+    this.status = status;
+  }
+  
+  public Set<Card> getContent() {
+    return content;
+  }
+  
+  public void setContent(Set<Card> content) {
+    this.content = content;
+  }
+  
+  public Set<User> getBookmarkedBy() {
+    return bookmarkedBy;
+  }
+  
+  public void setBookmarkedBy(Set<User> bookmarkedBy) {
+    this.bookmarkedBy = bookmarkedBy;
+  }
+  
+  @Override
+  public Long getId() {
+    return id;
+  }
+  
+  public void setId(Long id) {
+    this.id = id;
+  }
+  
+  // used in compareTo to evade null return
+  private Long getDeckId() {
+    return id;
+  }
+  
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 59 * hash + Objects.hashCode(this.getId());
+    return hash;
+  }
+  
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof Deck)) {
+      return false;
+    }
+    final Deck other = (Deck) obj;
+    if (!Objects.equals(this.getId(), other.getId())) {
+      return false;
+    }
+    return true;
+  }
+  
+  @Override
+  public String toString() {
+    return "at.qe.skeleton.model.Deck[ id = " + getId() + " ]";
+  }
+  
+  @Override
+  public boolean isNew() {
+    return (null == creationDate);
+  }
+  
+  @Override
+  public int compareTo(Deck o) {
+    return this.getDeckId().compareTo(o.getDeckId());
+  }
+}

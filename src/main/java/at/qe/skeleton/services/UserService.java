@@ -47,10 +47,8 @@ public class UserService {
     }
 
     /**
-     * Saves the user. This method will also set {@link User#createDate} for new
-     * entities or {@link User#updateDate} for updated entities. The user
-     * requesting this operation will also be stored as {@link User#createDate}
-     * or {@link User#updateUser} respectively.
+     * Saves the user. This method will also set {@link User#creationDate} for new
+     * entities.
      *
      * @param user the user to save
      * @return the updated user
@@ -58,11 +56,7 @@ public class UserService {
     @PreAuthorize("hasAuthority('ADMIN')")
     public User saveUser(User user) {
         if (user.isNew()) {
-            user.setCreateDate(new Date());
-            user.setCreateUser(getAuthenticatedUser());
-        } else {
-            user.setUpdateDate(new Date());
-            user.setUpdateUser(getAuthenticatedUser());
+            user.setCreationDate(new Date());
         }
         return userRepository.save(user);
     }
