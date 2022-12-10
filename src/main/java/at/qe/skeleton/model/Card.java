@@ -13,34 +13,31 @@ import java.util.Date;
  */
 
 @Entity
-public class Card implements CardInterface, Persistable<Integer>, Serializable, Comparable<Card>
+@Table(name = "card")
+public class Card implements CardInterface, Persistable<Long>, Serializable, Comparable<Card>
 {
     @Id
-    private Integer cardId;
+    private Long cardId;
 
-    private Integer deckId;
+    private Long deckId;
 
     private String frontSideContent;
     private String backSideContent;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
-    public int getCardId() {
+    public Long getCardId() {
         return cardId;
     }
 
-    public void setCardId(int cardId) {
+    public void setCardId(Long cardId) {
         this.cardId = cardId;
     }
 
-    public void setCardId(Integer cardId) {
-        this.cardId = cardId;
-    }
-
-    public Integer getDeckId() {
+    public Long getDeckId() {
         return deckId;
     }
 
-    public void setDeckId(Integer deckId) {
+    public void setDeckId(Long deckId) {
         this.deckId = deckId;
     }
 
@@ -89,14 +86,11 @@ public class Card implements CardInterface, Persistable<Integer>, Serializable, 
             return false;
         }
         final Card other = (Card) obj;
-        if (!Objects.equals(this.cardId, other.cardId)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.cardId, other.cardId);
     }
 
     @Override
-    public Integer getId() {
+    public Long getId() {
         return getCardId();
     }
 
@@ -107,6 +101,6 @@ public class Card implements CardInterface, Persistable<Integer>, Serializable, 
 
     @Override
     public boolean isNew() {
-        return false;
+        return null==createDate;
     }
 }
