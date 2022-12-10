@@ -27,7 +27,8 @@
         </h:form>
 
         <div class="decks">
-            <h:form id="personalDecks" rendered="#{param.i==0 || param.i==null}">
+
+            <h:form rendered="#{param.i==0 || param.i==null}">
                 <p:dataTable var="deck" value="#{deckBean.personalDecks}" widgetVar="personalDeckTable"
                              emptyMessage="No decks found"
                              filteredValue="#{deckBean.filteredPersonalDecks}"
@@ -47,6 +48,7 @@
 
                 </p:dataTable>
             </h:form>
+
             <h:form id="savedDecks" rendered="#{param.i==1}">
                 <p:dataTable var="deck" value="#{deckBean.savedDecks}" widgetVar="personalDeckTable"
                              emptyMessage="No decks found"

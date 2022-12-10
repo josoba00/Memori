@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +14,11 @@ import java.util.Locale;
  * Viewscoped bean to retrieve decks.
  *
  * This class is part of the skeleton project provided for students of the
- * courses "Software Architecture" and "Software Engineering" offered by the
+ * courses "Software Architecture" by the
  * University of Innsbruck.
  */
 @Component
-@Scope("View")
+@ViewScoped
 public class DeckBean implements Serializable {
 
     private List<Object> personalDecks;

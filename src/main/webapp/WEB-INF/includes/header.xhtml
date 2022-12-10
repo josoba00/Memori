@@ -8,7 +8,7 @@
       xml:lang="en">
 <body>
 <ui:composition>
-    <h:form>
+    <h:form rendered="#{!hideHeader}">
         <p:menubar>
             <p:menuitem value="Home" rendered="#{sessionInfoBean.loggedIn}" action="/secured/home.xhtml" />
 
