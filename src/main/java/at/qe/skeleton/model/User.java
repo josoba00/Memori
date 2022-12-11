@@ -35,7 +35,7 @@ public class User implements Persistable<String>, Serializable, Comparable<User>
     boolean enabled;
     
     @ElementCollection(targetClass = UserRole.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "User_UserRole")
+    @CollectionTable(name = "user_user_role")
     @Enumerated(EnumType.STRING)
     private Set<UserRole> roles;
     
@@ -182,10 +182,7 @@ public class User implements Persistable<String>, Serializable, Comparable<User>
             return false;
         }
         final User other = (User) obj;
-        if (!Objects.equals(this.username, other.username)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.username, other.username);
     }
     
     @Override
