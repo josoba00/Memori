@@ -6,12 +6,14 @@ import java.util.Objects;
 
 @Embeddable
 public class UserCardInfoID implements Serializable {
-  
     
-   private Long cardId;
-   private String username;
     
-    public UserCardInfoID() {}
+    private Long cardId;
+    @Column(length = 100)
+    private String username;
+    
+    public UserCardInfoID() {
+    }
     
     public UserCardInfoID(Long cardId, String username) {
         this.cardId = cardId;
