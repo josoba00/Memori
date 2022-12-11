@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Date;
+import java.util.Set;
 
 
 /**
@@ -17,28 +18,51 @@ import java.util.Date;
 public class Card implements CardInterface, Persistable<Long>, Serializable, Comparable<Card>
 {
     @Id
-    private Long cardId;
+    private Long id;
 
-    private Long deckId;
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    private Deck container;
 
     private String frontSideContent;
     private String backSideContent;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createDate;
-    public Long getCardId() {
-        return cardId;
+    private Date creationDate;
+
+    @OneToMany(
+        mappedBy = "card",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    private Set<UserCardInfo> cardInfos;
+    private Long getCardId() {
+        return id;
+    }
+
+    public Deck getContainer() {
+        return container;
+    }
+
+    public void setContainer(Deck container) {
+        this.container = container;
+    }
+
+    public Set<UserCardInfo> getCardInfos() {
+        return cardInfos;
+    }
+
+    public void setCardInfos(Set<UserCardInfo> cardInfos) {
+        this.cardInfos = cardInfos;
     }
 
     public void setCardId(Long cardId) {
-        this.cardId = cardId;
+        this.id = cardId;
     }
 
-    public Long getDeckId() {
-        return deckId;
-    }
-
-    public void setDeckId(Long deckId) {
-        this.deckId = deckId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFrontSideContent() {
@@ -57,23 +81,23 @@ public class Card implements CardInterface, Persistable<Long>, Serializable, Com
         this.backSideContent = backSideContent;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCreationDate() {
+        return creationDate;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Override
     public int compareTo(Card o) {
-        return this.cardId.compareTo(o.getCardId());
+        return this.id.compareTo(o.getCardId());
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.cardId);
+        hash = 59 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -86,7 +110,7 @@ public class Card implements CardInterface, Persistable<Long>, Serializable, Com
             return false;
         }
         final Card other = (Card) obj;
-        return Objects.equals(this.cardId, other.cardId);
+        return Objects.equals(this.id, other.id);
     }
 
     @Override
@@ -101,6 +125,6 @@ public class Card implements CardInterface, Persistable<Long>, Serializable, Com
 
     @Override
     public boolean isNew() {
-        return null==createDate;
+        return null == creationDate;
     }
 }
