@@ -25,11 +25,17 @@ public class Card implements CardInterface, Persistable<Long>, Serializable, Com
     private Date creationDate;
     
     @ManyToOne(
-        fetch = FetchType.LAZY
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL
     )
     private Deck container;
     
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(
+        mappedBy = "user",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
     private Set<UserCardInfo> cardInfos;
     
     // used in compareTo to evade null return

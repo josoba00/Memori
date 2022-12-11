@@ -48,11 +48,8 @@ public class User implements Persistable<String>, Serializable, Comparable<User>
     private Set<Deck> createdDecks = new HashSet<>();
     
     @ManyToMany(
-        cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-        },
-        fetch = FetchType.LAZY
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL
     )
     @JoinTable(name = "bookmarks",
         joinColumns = @JoinColumn(name = "username"),
@@ -60,7 +57,11 @@ public class User implements Persistable<String>, Serializable, Comparable<User>
     )
     private Set<Deck> bookmarks = new HashSet<>();
     
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(
+        cascade = CascadeType.ALL,
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
     private Set<UserCardInfo> cardInfos;
     
     public User() {

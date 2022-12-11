@@ -11,11 +11,15 @@ public class UserCardInfoID implements Serializable {
         this.user = user;
     }
     
-    @ManyToOne(
-        fetch = FetchType.LAZY
+   @ManyToOne(
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL
     )
     final Card card;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL
+    )
     final User user;
     
     @Override

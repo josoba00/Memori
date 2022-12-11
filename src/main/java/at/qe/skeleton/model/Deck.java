@@ -40,6 +40,7 @@ public class Deck implements DeckInterface, Persistable<Long>, Serializable, Com
     
     @ManyToMany(
         mappedBy = "bookmarks",
+        cascade = CascadeType.ALL,
         fetch = FetchType.LAZY
     )
     private Set<User> bookmarkedBy = new HashSet<>();
