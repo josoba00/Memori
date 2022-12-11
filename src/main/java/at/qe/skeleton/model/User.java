@@ -58,9 +58,9 @@ public class User implements Persistable<String>, Serializable, Comparable<User>
     private Set<Deck> bookmarks = new HashSet<>();
     
     @OneToMany(
+        mappedBy = "user",
         cascade = CascadeType.ALL,
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
+        orphanRemoval = true
     )
     private Set<UserCardInfo> cardInfos;
     

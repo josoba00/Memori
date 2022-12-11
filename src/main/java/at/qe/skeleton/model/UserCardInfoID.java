@@ -6,25 +6,37 @@ import java.util.Objects;
 
 @Embeddable
 public class UserCardInfoID implements Serializable {
-    public UserCardInfoID(Card card, User user) {
-        this.card = card;
-        this.user = user;
+  
+    
+   private Long cardId;
+   private String username;
+    
+    public UserCardInfoID() {}
+    
+    public UserCardInfoID(Long cardId, String username) {
+        this.cardId = cardId;
+        this.username = username;
     }
     
-   @ManyToOne(
-        fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL
-    )
-    final Card card;
-    @ManyToOne(
-        fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL
-    )
-    final User user;
+    public Long getCardId() {
+        return cardId;
+    }
+    
+    public void setCardId(Long cardId) {
+        this.cardId = cardId;
+    }
+    
+    public String getUsername() {
+        return username;
+    }
+    
+    public void setUsername(String username) {
+        this.username = username;
+    }
     
     @Override
     public int hashCode() {
-        return card.hashCode() + user.hashCode();
+        return cardId.hashCode() + username.hashCode();
     }
     
     @Override
@@ -36,12 +48,12 @@ public class UserCardInfoID implements Serializable {
             return false;
         }
         UserCardInfoID other = (UserCardInfoID) obj;
-        return this.card.equals(other.card) &&
-            this.user.equals(other.user);
+        return this.cardId.equals(other.cardId) &&
+            this.username.equals(other.username);
     }
     
     @Override
     public String toString() {
-        return "at.qe.skeleton.model.UserCardInfoID[ " + this.card.toString() + " " + this.user.toString() + "]";
+        return "at.qe.skeleton.model.UserCardInfoID[ " + this.cardId.toString() + " " + this.username + "]";
     }
 }

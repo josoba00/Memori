@@ -31,10 +31,9 @@ public class Card implements CardInterface, Persistable<Long>, Serializable, Com
     private Deck container;
     
     @OneToMany(
-        mappedBy = "user",
+        mappedBy = "card",
         cascade = CascadeType.ALL,
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
+        orphanRemoval = true
     )
     private Set<UserCardInfo> cardInfos;
     

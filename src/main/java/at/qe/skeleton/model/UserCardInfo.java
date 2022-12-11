@@ -15,6 +15,18 @@ public class UserCardInfo implements Persistable<UserCardInfoID> {
     @EmbeddedId
     private UserCardInfoID id;
     
+    @ManyToOne(
+        fetch = FetchType.LAZY
+    )
+    @MapsId("cardId")
+    private Card card;
+    
+    @ManyToOne(
+        fetch = FetchType.LAZY
+    )
+    @MapsId("username")
+    private User user;
+    
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
     
@@ -72,6 +84,34 @@ public class UserCardInfo implements Persistable<UserCardInfoID> {
     
     private UserCardInfoID getNotNullableId() {
         return this.id;
+    }
+    
+    public void setId(UserCardInfoID id) {
+        this.id = id;
+    }
+    
+    public Card getCard() {
+        return card;
+    }
+    
+    public void setCard(Card card) {
+        this.card = card;
+    }
+    
+    public User getUser() {
+        return user;
+    }
+    
+    public void setUser(User user) {
+        this.user = user;
+    }
+    
+    public Date getCreationDate() {
+        return creationDate;
+    }
+    
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
     
     @Override
