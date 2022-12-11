@@ -52,7 +52,7 @@ public class User implements Persistable<String>, Serializable, Comparable<User>
         cascade = CascadeType.ALL
     )
     @JoinTable(name = "bookmarks",
-        joinColumns = @JoinColumn(name = "username"),
+        joinColumns = @JoinColumn(name = "user_username"),
         inverseJoinColumns = @JoinColumn(name = "deck_id")
     )
     private Set<Deck> bookmarks = new HashSet<>();
