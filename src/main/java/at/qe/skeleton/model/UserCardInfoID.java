@@ -9,6 +9,7 @@ public class UserCardInfoID implements Serializable {
   
     
    private Long cardId;
+   @Column(length = 100)
    private String username;
     
     public UserCardInfoID() {}
