@@ -7,14 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import at.qe.skeleton.spring.CustomizedLogoutSuccessHandler;
 
 /**
  * Spring configuration for web security.
@@ -24,19 +21,14 @@ import at.qe.skeleton.spring.CustomizedLogoutSuccessHandler;
  * University of Innsbruck.
  */
 @Configuration
-@EnableWebSecurity()
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity
+public class WebSecurityConfig {
 
     @Autowired
     DataSource dataSource;
 
     @Bean
-    protected LogoutSuccessHandler logoutSuccessHandler() {
-    	return new CustomizedLogoutSuccessHandler();
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.csrf().disable();
 
@@ -46,10 +38,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/login.xhtml")
-                .logoutSuccessHandler(this.logoutSuccessHandler());
+                .logoutSuccessUrl("/login.xhtml");
 
-        http.authorizeRequests()
+        http.authorizeHttpRequests()
                 //Permit access to the H2 console
                 .antMatchers("/h2-console/**").permitAll()
                 //Permit access for all to error pages
@@ -61,9 +52,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //Permit access only for some roles
                 .antMatchers("/secured/**")
                 .hasAnyAuthority("ADMIN", "LEARNER")
-                // Allow only certain roles to use websockets (only logged in users)
-                .antMatchers("/omnifaces.push/**")
-                .hasAnyAuthority("ADMIN", "LEARNER")
                 .and().formLogin()
                 .loginPage("/login.xhtml")
                 .loginProcessingUrl("/login")
@@ -72,14 +60,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
  
         http.exceptionHandling().accessDeniedPage("/error/access_denied.xhtml");
         http.sessionManagement().invalidSessionUrl("/error/invalid_session.xhtml");
-
+        
+        return http.build();
     }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         //Configure roles and passwords via datasource
         auth.jdbcAuthentication().dataSource(dataSource)
-                .usersByUsernameQuery("select username, password, enabled from user where username=?")
+                .usersByUsernameQuery("select username, password, enabled from users where username=?")
                 .authoritiesByUsernameQuery("select user_username, roles from user_user_role where user_username=?");
     }
 
