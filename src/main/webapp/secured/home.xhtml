@@ -16,10 +16,10 @@
                     <p:menuitem value="Home" outcome="/secured/home.xhtml" icon="pi pi-fw pi-home">
                         <f:param name="i" value="0"/>
                     </p:menuitem>
-                    <p:menuitem value="Saved" outcome="/secured/home.xhtml" icon="pi pi-folder">
+                    <p:menuitem value="Saved" outcome="/secured/home.xhtml">
                         <f:param name="i" value="1"/>
                     </p:menuitem>
-                    <p:menuitem value="Trash" outcome="/secured/home.xhtml" icon="pi pi-trash">
+                    <p:menuitem value="Trash" outcome="/secured/home.xhtml">
                         <f:param name="i" value="2"/>
                     </p:menuitem>
                 </p:tabMenu>
@@ -28,43 +28,43 @@
 
         <div class="decks">
 
-            <h:form id="deckForm">
-
-                <p:dataTable var="deck" value="#{deckBean.getDecks(param.i)}" widgetVar="personalDeckTable"
+            <h:form rendered="#{param.i==0 || param.i==null}">
+                <p:dataTable var="deck" value="#{deckBean.personalDecks}" widgetVar="personalDeckTable"
                              emptyMessage="No decks found"
                              filteredValue="#{deckBean.filteredPersonalDecks}"
                              globalFilterFunction="#{deckBean.globalFilterFunction}"
                              paginator="true" rows="15"
-                             paginatorPosition="bottom"
-                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink} ">
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
 
                     <f:facet name="header">
                         <div class="flex justify-content-end">
-                            <p:inputText id="globalFilter" onkeyup="PF('personalDeckTable').filter()" style="width:300px"
+                            <p:inputText id="globalFilter1" onkeyup="PF('personalDeckTable').filter()" style="width:300px"
                                          placeholder="Search" />
                         </div>
                     </f:facet>
-
-                    <p:column headerText="Deck-Title" filterable="false" sortBy="#{deck.title}" style="width: 8%">
-                        <h:outputText style="vertical-align: middle; margin-left: .5rem" value="#{deck.title}"/>
+                    <p:column headerText="Deck">
+                        <h:outputText style="vertical-align: middle; margin-left: .5rem" value="test"/>
                     </p:column>
-                    <p:column headerText="Description" width="37%">
-                        <div style="height: 80px; overflow-y: scroll; padding: 0 12px">
-                            <h:outputText style="text-align: justify;"  value="#{deck.description}"/>
+
+                </p:dataTable>
+            </h:form>
+
+            <h:form id="savedDecks" rendered="#{param.i==1}">
+                <p:dataTable var="deck" value="#{deckBean.savedDecks}" widgetVar="personalDeckTable"
+                             emptyMessage="No decks found"
+                             filteredValue="#{deckBean.filteredSavedDecks}"
+                             globalFilterFunction="#{deckBean.globalFilterFunction}"
+                             paginator="true" rows="15"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
+                    <f:facet name="header">
+                        <div class="flex justify-content-end">
+                            <p:inputText id="globalFilter2" onkeyup="PF('personalDeckTable').filter()" style="width:300px"
+                                         placeholder="Search" />
                         </div>
-                    </p:column>
-                    <p:column width="40%">
-                        <h:outputText style="margin-left: 5rem" value="Creator: #{deck.creator.username}" rendered="#{param.i==1}"/>
-                        <h:outputText style="margin-left: 5rem" value="#{deck.status}"/>
-                    </p:column>
-
-                    <p:column style="width: 15%">
-                        <p:menuButton icon="pi pi-ellipsis-h" styleClass="rounded-button" > <!-- TODO: Add actions -->
-                            <p:menuitem value="Edit" ajax="false" icon="pi pi-pencil"/>
-                            <p:menuitem value="Delete" icon="pi pi-trash"/>
-                            <p:menuitem value="Publish" icon="pi pi-unlock" rendered="#{'PRIVATE' eq deck.status.name()}"/>
-                            <p:menuitem value="Unpublish" icon="pi pi-lock" rendered="#{'PUBLIC' eq deck.status.name()}"/>
-                        </p:menuButton>
+                    </f:facet>
+                    <p:column headerText="Deck">
+                        <h:outputText style="vertical-align: middle; margin-left: .5rem" value="test"/>
                     </p:column>
 
                 </p:dataTable>
