@@ -17,7 +17,7 @@ import org.springframework.data.domain.Persistable;
  * University of Innsbruck.
  */
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User implements Persistable<String>, Serializable, Comparable<User> {
     
     private static final long serialVersionUID = 1L;

@@ -1,6 +1,5 @@
 package at.qe.skeleton.ui.beans;
 
-import javax.inject.Named;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -12,8 +11,7 @@ import org.springframework.stereotype.Component;
  * courses "Software Architecture" and "Software Engineering" offered by the
  * University of Innsbruck.
  */
-@Component
-@Named("secTest")
+@Component("secTest")
 @Scope("request")
 public class SecurityTestBean {
 
