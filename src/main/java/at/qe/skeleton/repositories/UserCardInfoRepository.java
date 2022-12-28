@@ -14,8 +14,6 @@ import java.util.List;
  */
 
 public interface UserCardInfoRepository extends AbstractRepository<UserCardInfo, UserCardInfoID>{
-
-    UserCardInfo findById(UserCardInfoID id);
     List<UserCardInfo> findAllByCard(Card card);
 
     List<UserCardInfo> findAllByUser(User user);
@@ -23,6 +21,8 @@ public interface UserCardInfoRepository extends AbstractRepository<UserCardInfo,
     List<UserCardInfo> findAllByRepetitionDate(Date repetition);
 
     List<UserCardInfo> findAllByNumberOfRepetitions(int numberOfRepetitions);
+
+    List<UserCardInfo> findAllByUserAndCard(User user, Card card);
 
 
 }
