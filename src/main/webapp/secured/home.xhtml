@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
@@ -9,28 +10,24 @@
                 template="/WEB-INF/templates/main.xhtml">
 
 
-    <ui:define name ="content" style="margin-top: 20px; margin-left: 20px;">
-        <h:form id="menu-form" >
-            <div class="card">
-                <p:tabMenu activeIndex="#{param.i}">
-                    <p:menuitem value="Home" outcome="/secured/home.xhtml" icon="pi pi-fw pi-home">
-                        <f:param name="i" value="0"/>
-                    </p:menuitem>
-                    <p:menuitem value="Saved" outcome="/secured/home.xhtml" icon="pi pi-folder">
-                        <f:param name="i" value="1"/>
-                    </p:menuitem>
-                    <p:menuitem value="Trash" outcome="/secured/home.xhtml" icon="pi pi-trash">
-                        <f:param name="i" value="2"/>
-                    </p:menuitem>
-                </p:tabMenu>
-            </div>
+    <ui:define name="content">
+        <h:form id="menu-form">
+            <p:tabMenu activeIndex="#{param.i}">
+                <p:menuitem value="Home" outcome="/secured/home.xhtml" icon="pi pi-fw pi-home">
+                    <f:param name="i" value="0"/>
+                </p:menuitem>
+                <p:menuitem value="Saved" outcome="/secured/home.xhtml" icon="pi pi-folder">
+                    <f:param name="i" value="1"/>
+                </p:menuitem>
+                <p:menuitem value="Trash" outcome="/secured/home.xhtml" icon="pi pi-trash">
+                    <f:param name="i" value="2"/>
+                </p:menuitem>
+            </p:tabMenu>
         </h:form>
 
         <div class="decks">
-
             <h:form id="deckForm">
-
-                <p:dataTable var="deck" value="#{deckBean.getDecks(param.i)}" widgetVar="personalDeckTable"
+                <p:dataTable id="decktable" var="deck" value="#{deckBean.getDecks(param.i)}" widgetVar="personalDeckTable"
                              emptyMessage="No decks found"
                              filteredValue="#{deckBean.filteredPersonalDecks}"
                              globalFilterFunction="#{deckBean.globalFilterFunction}"
@@ -40,34 +37,50 @@
 
                     <f:facet name="header">
                         <div class="flex justify-content-end">
-                            <p:inputText id="globalFilter" onkeyup="PF('personalDeckTable').filter()" style="width:300px"
-                                         placeholder="Search" />
+                            <p:inputText id="globalFilter" onkeyup="PF('personalDeckTable').filter()"
+                                         style="width:300px"
+                                         placeholder="Search"/>
                         </div>
                     </f:facet>
 
-                    <p:column headerText="Deck-Title" filterable="false" sortBy="#{deck.title}" style="width: 8%">
+                    <p:column headerText="Deck-Title" filterable="false" sortBy="#{deck.title}" style="width: 96px">
                         <h:outputText style="vertical-align: middle; margin-left: .5rem" value="#{deck.title}"/>
                     </p:column>
-                    <p:column headerText="Description" width="37%">
-                        <div style="height: 80px; overflow-y: scroll; padding: 0 12px">
-                            <h:outputText style="text-align: justify;"  value="#{deck.description}"/>
+                    <p:column headerText="Description">
+                        <div style="height: 80px; overflow-y: scroll; padding-right: 12px">
+                            <h:outputText style="text-align: justify;" value="#{deck.description}"/>
                         </div>
                     </p:column>
-                    <p:column width="40%">
-                        <h:outputText style="margin-left: 5rem" value="Creator: #{deck.creator.username}" rendered="#{param.i==1}"/>
-                        <h:outputText style="margin-left: 5rem" value="#{deck.status}"/>
+                    <p:column headerText="Creator" style="width: 96px" rendered="#{param.i==1}">
+                        <h:outputText style="margin-left: 12px" value="#{deck.creator.username}"/>
+                    </p:column>
+                    <p:column style="width: 96px">
+
+                        <h:outputText style="margin-left: 12px" value="#{deck.status}"/>
                     </p:column>
 
-                    <p:column style="width: 15%">
-                        <p:menuButton icon="pi pi-ellipsis-h" styleClass="rounded-button" > <!-- TODO: Add actions -->
-                            <p:menuitem value="Edit" ajax="false" icon="pi pi-pencil"/>
-                            <p:menuitem value="Delete" icon="pi pi-trash"/>
-                            <p:menuitem value="Publish" icon="pi pi-unlock" rendered="#{'PRIVATE' eq deck.status.name()}"/>
-                            <p:menuitem value="Unpublish" icon="pi pi-lock" rendered="#{'PUBLIC' eq deck.status.name()}"/>
+                    <p:column style="width: 128px"> <!-- TODO: Add actions -->
+                        <p:button value="Learn"/>
+                        <p:menuButton icon="pi pi-ellipsis-h" styleClass="rounded-button">
+                            <p:menuitem value="Edit" ajax="false" icon="pi pi-pencil" rendered="#{param.i==0 or param.i==null}" update=":deckForm"/>
+                            <p:menuitem value="Delete" icon="pi pi-trash" update=":deckForm">
+                                <p:confirm header="Confirmation"
+                                           message="Are you sure that you want to delete / remove this Deck? You cannot undo this operation."
+                                           icon="ui-icon-alert"/>
+                            </p:menuitem>
+                            <p:menuitem value="Publish" icon="pi pi-unlock"
+                                        rendered="#{'PRIVATE' eq deck.status.name() and (param.i==0 or param.i==null)}" update=":deckForm"/>
+                            <p:menuitem value="Unpublish" icon="pi pi-lock"
+                                        rendered="#{'PUBLIC' eq deck.status.name() and (param.i==0 or param.i==null)}" update=":deckForm"/>
                         </p:menuButton>
+
                     </p:column>
 
                 </p:dataTable>
+                <p:confirmDialog global="true" width="300">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times"/>
+                </p:confirmDialog>
             </h:form>
         </div>
 

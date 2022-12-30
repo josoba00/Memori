@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+                template="/WEB-INF/templates/main.xhtml">
+    <ui:define name="content">
+
+        <form action="explore.xhtml" method="get" style="margin: 50px auto auto; width: 50%;height: 60px; ">
+            <input class="text" type="text" name="search" placeholder="Search for Decks" value="#{param.search}"
+                   style="margin: 0;padding-left: 12px; height: 100%; width: 75%; font-size: 30px; border-radius: 50px; border: 2px solid #D0C8D0"/>
+            <input class="submit" type="submit" value="GO"
+                   style="margin: 0;height: 100%; width: max(20%,50px); float: right; font-size: 30px; border-radius: 50px; border: 0; background: #4F67E3; color: #FFFFFF; cursor: pointer"/>
+        </form>
+
+
+        <h:form style="margin-top: 50px"> <!--TODO: find out why rendered disables expandable rows + get decks from service-->
+            <p:dataTable var="deck" value="#{deckBean.getDecks(0)}"
+                         rowKey="#{deck.id}" paginator="true" rows="15"
+                         paginatorPosition="bottom"
+                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
+                <p:column style="width:32px">
+                    <p:rowToggler/>
+                </p:column>
+
+                <p:column headerText="Title">
+                    <h:outputText value="#{deck.title}"/>
+                </p:column>
+
+
+                <p:column headerText="Creator">
+                    <h:outputText value="#{deck.creator.username}"/>
+                </p:column>
+
+                <p:column headerText="Cards" style="width: 64px">
+                    <h:outputText value="#{deck.size()}"/>
+                </p:column>
+
+                <p:column style="width: 64px;"> <!--TODO: add action and maybe method in userservice to render correct icon-->
+                    <p:button icon="pi pi-bookmark" styleClass="rounded-button ui-button-secondary ui-button-flat" />
+                    <p:button icon="pi pi-bookmark-fill" styleClass="rounded-button ui-button-secondary ui-button-flat" />
+                </p:column>
+
+                <p:rowExpansion>
+                    <div style="padding:12px; text-align: justify">
+                        <h:outputText value="#{deck.description}"/>
+                    </div>
+
+
+                </p:rowExpansion>
+            </p:dataTable>
+        </h:form>
+
+
+
+    </ui:define>
+
+
+</ui:composition>
