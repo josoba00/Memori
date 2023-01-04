@@ -1,9 +1,12 @@
 package at.qe.skeleton.services;
 
+import at.qe.skeleton.model.Deck;
 import at.qe.skeleton.model.User;
 import at.qe.skeleton.repositories.UserRepository;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -75,6 +78,32 @@ public class UserService {
     private User getAuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return userRepository.findFirstByUsername(auth.getName());
+    }
+
+    /**
+     * Adds new Deck to currentUsers bookmarks.
+     * Database gets updated automatically.
+     *
+     * @param currentUser
+     * @param newBookmark
+     */
+    public void addNewBookmark(User currentUser, Deck newBookmark){
+        Set<Deck> userBookmarks = currentUser.getBookmarks();
+        userBookmarks.add(newBookmark);
+        currentUser.setBookmarks(userBookmarks);
+    }
+
+    /**
+     * Removes Deck from currentUser bookmarks.
+     *Database gets updated automatically.
+     *
+     * @param currentUser
+     * @param deckToRemove
+     */
+    public void deleteBookmark(User currentUser, Deck deckToRemove){
+        Set<Deck> userBookmarks = currentUser.getBookmarks();
+        userBookmarks.remove(deckToRemove);
+        currentUser.setBookmarks(userBookmarks);
     }
 
 }

@@ -1,5 +1,9 @@
 package at.qe.skeleton.tests;
 
+import at.qe.skeleton.model.Deck;
+import at.qe.skeleton.model.User;
+import at.qe.skeleton.model.UserRole;
+import at.qe.skeleton.services.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.util.collections.Sets;
@@ -9,9 +13,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import at.qe.skeleton.model.User;
-import at.qe.skeleton.model.UserRole;
-import at.qe.skeleton.services.UserService;
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
  * Some very basic tests for {@link UserService}.
@@ -190,4 +194,38 @@ public class UserServiceTest {
         });
     }
 
+    @Test
+    public void testAddingBookmark(){
+        Deck testDeck = new Deck();
+        testDeck.setId(55L);
+
+        User testUser = new User();
+        testUser.setId("testUser");
+
+        Set<Deck> bookmarkSet = new HashSet<>();
+
+        Assertions.assertEquals(bookmarkSet, testUser.getBookmarks());
+        bookmarkSet.add(testDeck);
+        userService.addNewBookmark(testUser, testDeck);
+        Assertions.assertEquals(bookmarkSet, testUser.getBookmarks(), "Unable to add new Bookmark!");
+    }
+
+    @Test
+    public void testDeletingBookmark(){
+        Deck testDeck1 = new Deck();
+        testDeck1.setId(55L);
+
+        Deck testDeck2 = new Deck();
+        testDeck2.setId(56L);
+
+        Set<Deck> bookmarkSet = new HashSet<>(Set.of(testDeck1, testDeck2));
+
+        User testUser = new User();
+        testUser.setId("testUser");
+        testUser.setBookmarks(bookmarkSet);
+
+        bookmarkSet.remove(testDeck1);
+        userService.deleteBookmark(testUser, testDeck1);
+        Assertions.assertEquals(bookmarkSet, testUser.getBookmarks(), "Unable to remove Bookmark!");
+    }
 }
