@@ -1,10 +1,11 @@
 package at.qe.skeleton.repositories;
 
-import at.qe.skeleton.model.Card;
 import at.qe.skeleton.model.Deck;
 import at.qe.skeleton.model.User;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 
 public interface DeckRepository extends AbstractRepository<Deck, Long>{
@@ -15,4 +16,9 @@ public interface DeckRepository extends AbstractRepository<Deck, Long>{
     List<Deck> findAllByStatusIsPublic();
 
     List<Deck> findAllByTitleContaining(String title);
+
+    // Tried with Modifying Annotation and own Query but still didn't work or threw other exception
+    @Modifying
+    @Query("Delete From Deck u WHERE u.id = :deckID")
+    void deleteById(@Param("deckID") Long id);
 }
