@@ -83,7 +83,7 @@ class DeckServiceTest {
         copiedUser.setUsername("testUser");
         userService.saveUser(copiedUser);
 
-        assertEquals(deckRepository.findAllByStatusIsPublic().size(), deckService.loadPublicDecks(copiedUser).size());
+        assertEquals(deckRepository.findAllByStatusIsPublic().size(), deckService.loadAllForeignPublicDecks(copiedUser).size());
     }
 
     @Test
