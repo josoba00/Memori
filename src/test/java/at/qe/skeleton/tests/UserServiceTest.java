@@ -32,6 +32,7 @@ public class UserServiceTest {
     UserService userService;
 
     @Test
+    @DirtiesContext
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     public void testDatainitialization() {
         Assertions.assertEquals(4, userService.getAllUsers().size(), "Insufficient amount of users initialized for test data source");
@@ -127,6 +128,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @DirtiesContext
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     public void testExceptionForEmptyUsername() {
         Assertions.assertThrows(org.springframework.orm.jpa.JpaSystemException.class, () -> {
@@ -174,6 +176,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @DirtiesContext
     @WithMockUser(username = "user1", authorities = {"LEARNER"})
     public void testUnauthorizedSaveUser() {
         Assertions.assertThrows(org.springframework.security.access.AccessDeniedException.class, () -> {
@@ -195,6 +198,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @DirtiesContext
     public void testAddingBookmark(){
         Deck testDeck = new Deck();
         testDeck.setId(55L);
@@ -211,6 +215,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @DirtiesContext
     public void testDeletingBookmark(){
         Deck testDeck1 = new Deck();
         testDeck1.setId(55L);
