@@ -23,6 +23,9 @@ public class DeckService {
     @Autowired
     private DeckRepository deckRepository;
 
+    @Autowired
+    private UserService userService;
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public Collection<Deck> getAllDecks() {return deckRepository.findAll();}
 
@@ -33,7 +36,10 @@ public class DeckService {
         return deckRepository.save(deck);
     }
 
-    public void deleteDeck(Deck deck){
+    public void deleteDeck(Deck deck, User currentUser){
+        if (currentUser.getBookmarks().contains(deck)){
+            userService.deleteBookmark(currentUser, deck);
+        }
         deckRepository.delete(deck);
     }
 

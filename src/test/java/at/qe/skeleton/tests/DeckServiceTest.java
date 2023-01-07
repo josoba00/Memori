@@ -8,12 +8,15 @@ import at.qe.skeleton.repositories.DeckRepository;
 import at.qe.skeleton.services.DeckService;
 import at.qe.skeleton.services.UserService;
 import org.junit.jupiter.api.Test;
+import org.primefaces.extensions.component.slideout.SlideOut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.management.InstanceAlreadyExistsException;
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -56,25 +59,24 @@ class DeckServiceTest {
     }
 
     // TODO: Find out why delete() deletes all Decks except if i call Deck with Id = 1L;
-    /*
+
     @DirtiesContext
     @Test
     @Transactional
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void deleteDeck() {
         String deckTitle = "European Capitals";
+        User copiedUser = userService.loadUser("user1");
         Deck toBeDeletedDeck = deckService.loadDeck(2L);
 
         assertEquals(3, deckService.getAllDecks().size(), "There are missing Decks");
 
-        System.out.println(deckService.getAllDecks()); // returns 3
-        deckService.deleteDeck(toBeDeletedDeck);
-        System.out.println(deckService.getAllDecks()); // returns null
+        deckService.deleteDeck(toBeDeletedDeck, copiedUser);
 
-        //assertEquals(2, deckService.getAllDecks().size());
-        //Deck deletedDeck = deckService.loadDeck(2L);
-        //assertNull(deletedDeck, "Deleted Deck \"" + deckTitle + "\" could still be loaded from test data source");
-    }*/
+        assertEquals(2, deckService.getAllDecks().size());
+        assertFalse(deckService.getAllDecks().contains(toBeDeletedDeck));
+    }
+
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
