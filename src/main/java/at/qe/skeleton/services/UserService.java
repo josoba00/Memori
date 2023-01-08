@@ -2,26 +2,26 @@ package at.qe.skeleton.services;
 
 import at.qe.skeleton.model.Deck;
 import at.qe.skeleton.model.User;
+import at.qe.skeleton.model.UserRole;
 import at.qe.skeleton.repositories.UserRepository;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Set;
+
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * Service for accessing and manipulating user data.
- *
+ * <p>
  * This class is part of the skeleton project provided for students of the
  * courses "Software Architecture" and "Software Engineering" offered by the
  * University of Innsbruck.
  */
-@Component
+@Service
 @Scope("application")
 public class UserService {
 
@@ -38,6 +38,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public Collection<User> getAllAdmins() {
+        return userRepository.findByRole(UserRole.ADMIN);
+    }
+
     /**
      * Loads a single user identified by its username.
      *
@@ -47,6 +51,16 @@ public class UserService {
     @PreAuthorize("hasAuthority('ADMIN') or principal.username eq #username")
     public User loadUser(String username) {
         return userRepository.findFirstByUsername(username);
+    }
+
+    /**
+     * Loads all users (should be only one) by their email
+     * @param eMail The email to look for in the users
+     * @return All users that have that email
+     */
+    @PreAuthorize("hasAuthority('ADMIN') or principal.username eq #username")
+    public List<User> loadUserByMail(String eMail) {
+        return userRepository.findByMail(eMail);
     }
 
     /**
@@ -79,6 +93,19 @@ public class UserService {
         return userRepository.findFirstByUsername(auth.getName());
     }
 
+    /**
+     * Create a new user.
+     * For now no restriction to role
+     *
+     * @param username must be unique
+     * @param email    must be unique
+     * @param enabled  If the user can log in to the account
+     * @param roles    The roles the user has assigned ({@link UserRole})
+     * @return The {@link User} that is saved
+     */
+    public User createUser(String username, String password, String firstName, String lastName, String email, boolean enabled, Collection<UserRole> roles) {
+        return saveUser(new User(username, password, firstName, lastName, email, enabled, new TreeSet<>(roles)));
+    }
     /**
      * Adds new Deck to currentUsers bookmarks.
      * Database gets updated automatically.
