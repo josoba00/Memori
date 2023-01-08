@@ -25,9 +25,10 @@
             </p:tabMenu>
         </h:form>
 
-        <div class="decks">
-            <h:form id="deckForm">
-                <p:dataTable id="decktable" var="deck" value="#{deckBean.getDecks(param.i)}" widgetVar="personalDeckTable"
+        <div class="card">
+            <h:form id="personalDeckForm" rendered="#{param.i==0 or param.i==null}">
+                <p:dataTable id="personalDeckTable" var="deck" value="#{deckBean.personalDecks}"
+                             widgetVar="personalDeckTable"
                              emptyMessage="No decks found"
                              filteredValue="#{deckBean.filteredPersonalDecks}"
                              globalFilterFunction="#{deckBean.globalFilterFunction}"
@@ -43,35 +44,41 @@
                         </div>
                     </f:facet>
 
-                    <p:column headerText="Deck-Title" filterable="false" sortBy="#{deck.title}" style="width: 96px">
-                        <h:outputText style="vertical-align: middle; margin-left: .5rem" value="#{deck.title}"/>
+                    <p:column headerText="Deck-Title" filterable="false" sortBy="#{deck.title}"
+                              style="width: 130px; text-align: left; padding-left: 12px">
+                        <h:outputText style=" display: flex" value="#{deck.title}"/>
                     </p:column>
                     <p:column headerText="Description">
                         <div style="height: 80px; overflow-y: scroll; padding-right: 12px">
                             <h:outputText style="text-align: justify;" value="#{deck.description}"/>
                         </div>
                     </p:column>
-                    <p:column headerText="Creator" style="width: 96px" rendered="#{param.i==1}">
-                        <h:outputText style="margin-left: 12px" value="#{deck.creator.username}"/>
-                    </p:column>
-                    <p:column style="width: 96px">
+                    <p:column style="width: 96px; padding: 0">
 
-                        <h:outputText style="margin-left: 12px" value="#{deck.status}"/>
+                        <h:outputText style="margin: 0;" value="#{deck.status}"/>
                     </p:column>
 
-                    <p:column style="width: 128px"> <!-- TODO: Add actions -->
-                        <p:button value="Learn"/>
-                        <p:menuButton icon="pi pi-ellipsis-h" styleClass="rounded-button">
-                            <p:menuitem value="Edit" ajax="false" icon="pi pi-pencil" rendered="#{param.i==0 or param.i==null}" update=":deckForm"/>
-                            <p:menuitem value="Delete" icon="pi pi-trash" update=":deckForm">
+                    <p:column style="width: 128px; padding: 0">
+                        <p:button value="Learn" styleClass="rounded-button"/>
+
+                        <p:menuButton icon="pi pi-ellipsis-h"
+                                      styleClass="rounded-button ui-button-flat ui-button-plain">
+                            <p:menuitem value="Edit" ajax="false" icon="pi pi-pencil"
+                                        update=":personalDeckForm"/>
+                            <p:menuitem value="Delete" icon="pi pi-trash" update=":personalDeckForm:personalDeckTable"
+                                        action="#{deckBean.deleteDeck(deck)}">
                                 <p:confirm header="Confirmation"
                                            message="Are you sure that you want to delete / remove this Deck? You cannot undo this operation."
                                            icon="ui-icon-alert"/>
                             </p:menuitem>
                             <p:menuitem value="Publish" icon="pi pi-unlock"
-                                        rendered="#{'PRIVATE' eq deck.status.name() and (param.i==0 or param.i==null)}" update=":deckForm"/>
+                                        rendered="#{'PRIVATE' eq deck.status.name()}"
+                                        action="#{deckBean.makeDeckPublic(deck)}"
+                                        update=":personalDeckForm:personalDeckTable"/>
                             <p:menuitem value="Unpublish" icon="pi pi-lock"
-                                        rendered="#{'PUBLIC' eq deck.status.name() and (param.i==0 or param.i==null)}" update=":deckForm"/>
+                                        rendered="#{'PUBLIC' eq deck.status.name()}"
+                                        action="#{deckBean.makeDeckPrivate(deck)}"
+                                        update=":personalDeckForm:personalDeckTable"/>
                         </p:menuButton>
 
                     </p:column>
@@ -84,6 +91,54 @@
             </h:form>
         </div>
 
-    </ui:define>
+        <div class="card" style="display: #{param.i!=1 ? 'none' : ''}"> <!-- this is necessary for two primefaces global filters to work (instead of using normal rendered on the form).)-->
+            <h:form id="savedDeckForm">
+                <p:dataTable id="savedDeckTable" var="deck" value="#{deckBean.savedDecks}"
+                             widgetVar="savedDeckTable"
+                             emptyMessage="No decks found"
+                             filteredValue="#{deckBean.filteredSavedDecks}"
+                             globalFilterFunction="#{deckBean.globalFilterFunction}"
+                             paginator="true" rows="15"
+                             paginatorPosition="bottom"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink} ">
 
-</ui:composition>
+                    <f:facet name="header">
+                        <div class="flex justify-content-end">
+                            <p:inputText id="globalFilter" onkeyup="PF('savedDeckTable').filter()"
+                                         style="width:300px"
+                                         placeholder="Search"/>
+                        </div>
+                    </f:facet>
+
+                    <p:column headerText="Deck-Title" filterable="false" sortBy="#{deck.title}"
+                              style="width: 130px; text-align: left; padding-left: 12px">
+                        <h:outputText style=" display: flex" value="#{deck.title}"/>
+                    </p:column>
+                    <p:column headerText="Description">
+                        <div style="height: 80px; overflow-y: scroll; padding-right: 12px">
+                            <h:outputText style="text-align: justify;" value="#{deck.description}"/>
+                        </div>
+                    </p:column>
+                    <p:column style="width: 128px">
+                        <p:button value="Learn" styleClass="rounded-button"/>
+                        <p:commandButton styleClass="rounded-button ui-button-flat ui-button-plain" icon="pi pi-trash"
+                                         action="#{deckBean.deleteBookmark(deck)}"
+                                         update=":savedDeckForm:savedDeckTable">
+                        <p:confirm header="Confirmation"
+                                   message="Are you sure that you want to delete / remove this Deck? You cannot undo this operation."
+                                   icon="ui-icon-alert"/>
+                    </p:commandButton>
+                </p:column>
+
+            </p:dataTable>
+            <p:confirmDialog global="true" width="300">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times"/>
+            </p:confirmDialog>
+        </h:form>
+    </div>
+
+
+</ui:define>
+
+        </ui:composition>

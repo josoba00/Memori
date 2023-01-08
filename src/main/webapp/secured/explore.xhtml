@@ -10,52 +10,59 @@
                 template="/WEB-INF/templates/main.xhtml">
     <ui:define name="content">
 
-        <form action="explore.xhtml" method="get" style="margin: 50px auto auto; width: 50%;height: 60px; ">
+        <form action="explore.xhtml" method="get"
+              style="margin: 50px auto auto; width: max(min(400px,100%), 50%);height: 60px; display: grid; grid-template-columns: 3fr 1fr">
             <input class="text" type="text" name="search" placeholder="Search for Decks" value="#{param.search}"
-                   style="margin: 0;padding-left: 12px; height: 100%; width: 75%; font-size: 30px; border-radius: 50px; border: 2px solid #D0C8D0"/>
+                   style="margin: 0;padding-left: 12px; height: 100%; width: 100%; font-size: 30px; border-radius: 50px 0 0 50px; border: 2px solid #D0C8D0"/>
             <input class="submit" type="submit" value="GO"
-                   style="margin: 0;height: 100%; width: max(20%,50px); float: right; font-size: 30px; border-radius: 50px; border: 0; background: #4F67E3; color: #FFFFFF; cursor: pointer"/>
+                   style="margin: 0;height: 100%; width: min(150px,100%); float: right; font-size: 30px; border-radius: 0 50px 50px 0; border: 0; background: #4F67E3; color: #FFFFFF; cursor: pointer; -webkit-appearance: none"/>
         </form>
 
 
-        <h:form style="margin-top: 50px"> <!--TODO: find out why rendered disables expandable rows + get decks from service-->
-            <p:dataTable var="deck" value="#{deckBean.getDecks(0)}"
-                         rowKey="#{deck.id}" paginator="true" rows="15"
-                         paginatorPosition="bottom"
-                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+        <div style="display: #{param.search==null ? 'none' : ''}">
+            <h:form id="searchForm" style="margin-top: 50px">
+                <p:dataTable id="searchTable" var="deck" value="#{deckListController.searchDecks(param.search)}"
+                             rowKey="#{deck.id}" paginator="true" rows="15"
+                             paginatorPosition="bottom"
+                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
 
-                <p:column style="width:32px">
-                    <p:rowToggler/>
-                </p:column>
+                    <p:column style="width:32px">
+                        <p:rowToggler/>
+                    </p:column>
 
-                <p:column headerText="Title">
-                    <h:outputText value="#{deck.title}"/>
-                </p:column>
-
-
-                <p:column headerText="Creator">
-                    <h:outputText value="#{deck.creator.username}"/>
-                </p:column>
-
-                <p:column headerText="Cards" style="width: 64px">
-                    <h:outputText value="#{deck.size()}"/>
-                </p:column>
-
-                <p:column style="width: 64px;"> <!--TODO: add action and maybe method in userservice to render correct icon-->
-                    <p:button icon="pi pi-bookmark" styleClass="rounded-button ui-button-secondary ui-button-flat" />
-                    <p:button icon="pi pi-bookmark-fill" styleClass="rounded-button ui-button-secondary ui-button-flat" />
-                </p:column>
-
-                <p:rowExpansion>
-                    <div style="padding:12px; text-align: justify">
-                        <h:outputText value="#{deck.description}"/>
-                    </div>
+                    <p:column headerText="Title">
+                        <h:outputText value="#{deck.title}"/>
+                    </p:column>
 
 
-                </p:rowExpansion>
-            </p:dataTable>
-        </h:form>
+                    <p:column headerText="Creator">
+                        <h:outputText value="#{deck.creator.username}"/>
+                    </p:column>
 
+                    <p:column headerText="Cards" style="width: 64px">
+                        <h:outputText value="#{deck.size()}"/>
+                    </p:column>
+
+                    <p:column style="width: 64px;">
+                        <p:commandButton action="#{userBookmarkController.doAddBookmark(deck)}" icon="pi pi-bookmark"
+                                         styleClass="rounded-button ui-button-secondary ui-button-flat"
+                                         rendered="#{not userBookmarkController.isBookmarked(deck)}"
+                                         update=":searchForm:searchTable"/>
+                        <p:commandButton disabled="true" icon="pi pi-bookmark-fill"
+                                         styleClass="rounded-button ui-button-secondary ui-button-flat"
+                                         rendered="#{userBookmarkController.isBookmarked(deck)}"/>
+                    </p:column>
+
+                    <p:rowExpansion>
+                        <div style="padding:12px; text-align: justify">
+                            <h:outputText value="#{deck.description}"/>
+                        </div>
+
+
+                    </p:rowExpansion>
+                </p:dataTable>
+            </h:form>
+        </div>
 
 
     </ui:define>

@@ -5,6 +5,7 @@ import at.qe.skeleton.model.Deck;
 import at.qe.skeleton.model.DeckStatus;
 import at.qe.skeleton.model.User;
 import at.qe.skeleton.repositories.DeckRepository;
+import at.qe.skeleton.ui.beans.SessionInfoBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +26,8 @@ public class DeckService {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private SessionInfoBean sessionInfoBean;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public Collection<Deck> getAllDecks() {return deckRepository.findAll();}
@@ -55,6 +58,10 @@ public class DeckService {
 
     public List<Deck> loadDecksWithTitle(String title){
         return deckRepository.findAllByTitleContaining(title);
+    }
+
+    public List<Deck> loadDecksBySearch(String search){
+        return deckRepository.findBySearch(search, sessionInfoBean.getCurrentUserName());
     }
 
     public List<Deck> loadOwnDecks(User currentUser){
