@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.management.InstanceAlreadyExistsException;
+import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +29,9 @@ public class DeckService {
     private UserService userService;
     @Autowired
     private SessionInfoBean sessionInfoBean;
+
+    @Autowired
+    private MessageSenderService messageSenderService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public Collection<Deck> getAllDecks() {return deckRepository.findAll();}
@@ -78,24 +82,34 @@ public class DeckService {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void lockDeck(Deck deck){
+    public void lockDeck(Deck deck) {
+        if (deck.getStatus() == DeckStatus.PRIVATE) {
+            throw new IllegalStateException("Private Decks can't be locked");
+        }
         deck.setStatus(DeckStatus.LOCKED);
+        messageSenderService.sendDeckLockMessage(deck);
     }
 
-    /**
-     * Unlocks Deck and sets it implicitly to Private because no record of previous status.
-     * @param deck
-     */
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void unlockDeck(Deck deck){
-        deck.setStatus(DeckStatus.PRIVATE);
+    public void unlockDeck(Deck deck) {
+        if (deck.getStatus() != DeckStatus.LOCKED) {
+            throw new IllegalStateException("Deck was not locked");
+        }
+        deck.setStatus(DeckStatus.PUBLIC);
     }
 
     public void setDeckStatusPublic(Deck deck){
+        if(deck.getStatus() != DeckStatus.PRIVATE)
+        {
+            throw new IllegalStateException("Tried to set deck to public but was not private");
+        }
         deck.setStatus(DeckStatus.PUBLIC);
     }
 
     public void setDeckStatusPrivate(Deck deck){
+        if(deck.getStatus() != DeckStatus.PUBLIC){
+            throw new IllegalStateException("Tried to set deck to private but was not public");
+        }
         deck.setStatus(DeckStatus.PRIVATE);
     }
 

@@ -15,6 +15,8 @@ public interface DeckRepository extends AbstractRepository<Deck, Long>{
     @Query("Select u From Deck u WHERE u.status = 'PUBLIC'")
     List<Deck> findAllByStatusIsPublic();
 
+    Deck getReferenceById(Long id);
+
     List<Deck> findAllByTitleContaining(String title);
 
     @Query("Select u From Deck u WHERE u.status = 'PUBLIC' AND UPPER(u.title) LIKE UPPER(concat('%', ?1,'%')) AND NOT u.creator.username = ?2")

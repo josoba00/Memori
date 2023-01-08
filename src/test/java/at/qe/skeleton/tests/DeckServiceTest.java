@@ -134,6 +134,16 @@ class DeckServiceTest {
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     public void lockDeckTestAuthorised(){
         Deck deck = new Deck();
+        // Deck locking resluts in an email to the creator, therefore we need a creator and a title
+        deck.setCreator(new User(
+                "Name",
+                "passwd",
+                "fstName",
+                "lastName",
+                "test@mail.com",
+                true,
+                null));
+        deck.setTitle("DeckTitle");
         deck.setStatus(DeckStatus.PUBLIC);
 
         deckService.lockDeck(deck);
@@ -154,9 +164,8 @@ class DeckServiceTest {
         Deck deck = new Deck();
         deck.setStatus(DeckStatus.LOCKED);
 
-
         deckService.unlockDeck(deck);
-        assertEquals(DeckStatus.PRIVATE, deck.getStatus());
+        assertEquals(DeckStatus.PUBLIC, deck.getStatus());
     }
 
     @Test
