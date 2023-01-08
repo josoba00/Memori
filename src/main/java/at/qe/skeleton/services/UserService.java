@@ -56,7 +56,7 @@ public class UserService {
      * @param user the user to save
      * @return the updated user
      */
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or principal.username eq #user.username")
     public User saveUser(User user) {
         if (user.isNew()) {
             user.setCreationDate(new Date());
@@ -72,7 +72,6 @@ public class UserService {
     @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteUser(User user) {
         userRepository.delete(user);
-        // :TODO: write some audit log stating who and when this user was permanently deleted.
     }
 
     private User getAuthenticatedUser() {
@@ -106,4 +105,14 @@ public class UserService {
         currentUser.setBookmarks(userBookmarks);
     }
 
+    /**
+     * Returns true if deck is bookmarked by user
+     *
+     * @param user
+     * @param deck
+     *
+     */
+    public boolean isBookmarked(User user, Deck deck){
+        return user.getBookmarks().contains(deck);
+    }
 }
