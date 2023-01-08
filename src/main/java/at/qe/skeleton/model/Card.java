@@ -18,6 +18,7 @@ import java.util.Set;
 public class Card implements CardInterface, Persistable<Long>, Serializable, Comparable<Card>
 {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(
