@@ -8,6 +8,7 @@ import java.util.Date;
 
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository for managing {@link UserCardInfo} entities.
@@ -22,7 +23,7 @@ public interface UserCardInfoRepository extends AbstractRepository<UserCardInfo,
 
     List<UserCardInfo> findAllByNumberOfRepetitions(int numberOfRepetitions);
 
-    List<UserCardInfo> findAllByUserAndCard(User user, Card card);
+    UserCardInfo findFirstByUserAndCard(User user, Card card);
 
 
 }
