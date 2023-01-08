@@ -34,7 +34,17 @@ public class UserCardInfo implements Persistable<UserCardInfoID> {
     private boolean isFlipped;
     private float efFactor;
     private int numberOfRepetitions;
-    
+
+    private int learnInterval;
+
+    public int getLearnInterval() {
+        return learnInterval;
+    }
+
+    public void setLearnInterval(int learnInterval) {
+        this.learnInterval = learnInterval;
+    }
+
     @Override
     public UserCardInfoID getId() {
         return id;
