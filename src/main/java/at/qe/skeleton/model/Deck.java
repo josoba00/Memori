@@ -30,6 +30,7 @@ public class Deck implements DeckInterface, Persistable<Long>, Serializable, Com
     @Enumerated(EnumType.STRING)
     private DeckStatus status;
 
+
     @OneToMany(
             mappedBy = "container",
             cascade = CascadeType.ALL,
@@ -40,7 +41,6 @@ public class Deck implements DeckInterface, Persistable<Long>, Serializable, Com
 
     @ManyToMany(
             mappedBy = "bookmarks",
-            cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
     private Set<User> bookmarkedBy = new HashSet<>();
@@ -113,6 +113,10 @@ public class Deck implements DeckInterface, Persistable<Long>, Serializable, Com
     // used in compareTo to evade null return
     private Long getDeckId() {
         return id;
+    }
+
+    public int size(){
+        return this.content==null ? 0: this.content.size();
     }
 
     @Override

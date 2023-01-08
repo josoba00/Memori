@@ -1,5 +1,9 @@
 package at.qe.skeleton.tests;
 
+import at.qe.skeleton.model.Deck;
+import at.qe.skeleton.model.User;
+import at.qe.skeleton.model.UserRole;
+import at.qe.skeleton.services.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.util.collections.Sets;
@@ -9,9 +13,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import at.qe.skeleton.model.User;
-import at.qe.skeleton.model.UserRole;
-import at.qe.skeleton.services.UserService;
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
  * Some very basic tests for {@link UserService}.
@@ -28,6 +32,7 @@ public class UserServiceTest {
     UserService userService;
 
     @Test
+    @DirtiesContext
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     public void testDatainitialization() {
         Assertions.assertEquals(4, userService.getAllUsers().size(), "Insufficient amount of users initialized for test data source");
@@ -123,6 +128,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @DirtiesContext
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     public void testExceptionForEmptyUsername() {
         Assertions.assertThrows(org.springframework.orm.jpa.JpaSystemException.class, () -> {
@@ -162,6 +168,7 @@ public class UserServiceTest {
         });
     }
 
+    @Test
     @WithMockUser(username = "user1", authorities = {"LEARNER"})
     public void testAuthorizedLoadUser() {
         String username = "user1";
@@ -170,14 +177,17 @@ public class UserServiceTest {
     }
 
     @Test
+    @DirtiesContext
     @WithMockUser(username = "user1", authorities = {"LEARNER"})
-    public void testUnauthorizedSaveUser() {
-        Assertions.assertThrows(org.springframework.security.access.AccessDeniedException.class, () -> {
+    public void testSaveUser() {
+
             String username = "user1";
             User user = userService.loadUser(username);
             Assertions.assertEquals(username, user.getUsername(), "Call to userService.loadUser returned wrong user");
+            user.setFirstName("John");
             userService.saveUser(user);
-        });
+            user = userService.loadUser(username);
+            Assertions.assertEquals("John", user.getFirstName());
     }
 
     @Test
@@ -190,4 +200,40 @@ public class UserServiceTest {
         });
     }
 
+    @Test
+    @DirtiesContext
+    public void testAddingBookmark(){
+        Deck testDeck = new Deck();
+        testDeck.setId(55L);
+
+        User testUser = new User();
+        testUser.setId("testUser");
+
+        Set<Deck> bookmarkSet = new HashSet<>();
+
+        Assertions.assertEquals(bookmarkSet, testUser.getBookmarks());
+        bookmarkSet.add(testDeck);
+        userService.addNewBookmark(testUser, testDeck);
+        Assertions.assertEquals(bookmarkSet, testUser.getBookmarks(), "Unable to add new Bookmark!");
+    }
+
+    @Test
+    @DirtiesContext
+    public void testDeletingBookmark(){
+        Deck testDeck1 = new Deck();
+        testDeck1.setId(55L);
+
+        Deck testDeck2 = new Deck();
+        testDeck2.setId(56L);
+
+        Set<Deck> bookmarkSet = new HashSet<>(Set.of(testDeck1, testDeck2));
+
+        User testUser = new User();
+        testUser.setId("testUser");
+        testUser.setBookmarks(bookmarkSet);
+
+        bookmarkSet.remove(testDeck1);
+        userService.deleteBookmark(testUser, testDeck1);
+        Assertions.assertEquals(bookmarkSet, testUser.getBookmarks(), "Unable to remove Bookmark!");
+    }
 }

@@ -2,8 +2,12 @@ package at.qe.skeleton.repositories;
 
 import java.io.Serializable;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
+
+import javax.transaction.Transactional;
 
 /**
  * Common base repository for all other repositories. Provides basic methods for
@@ -41,7 +45,7 @@ public interface AbstractRepository<T, ID extends Serializable> extends Reposito
      * @return The entity with the given id or {@literal null} if none found.
      * @throws IllegalArgumentException If {@code id} is {@literal null}.
      */
-    T findById(ID id);
+    T getReferenceById(ID id);
 
     /**
      * Saves a given entity. Use the returned instance for further operations as

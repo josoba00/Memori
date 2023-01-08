@@ -4,13 +4,12 @@
 
     <groupId>at.qe</groupId>
     <artifactId>skeleton</artifactId>
-    <version>1.0.6</version>
+    <version>1.1</version>
     <packaging>war</packaging>
 
     <name>skeleton</name>
     <description>A skeleton project to be used as starting point for the courses
-        "Software Architecture" and "Software Engineering" offered by the
-        University of Innsbruck.
+        "Software Architecture" offered by the University of Innsbruck.
 
         Uses Spring framework (http://spring.io) for the backend and
         JSF (http://www.oracle.com/technetwork/java/javaee/javaserverfaces-139869.html)
@@ -25,14 +24,26 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-       <version>2.6.4</version>
+       <version>2.7.6</version>
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <joinfaces.version>4.5.4</joinfaces.version>
-        <duplicate-finder-maven-plugin.version>1.5.0</duplicate-finder-maven-plugin.version>
+        <joinfaces.version>4.7.6</joinfaces.version>
+        <duplicate-finder-maven-plugin.version>1.5.1</duplicate-finder-maven-plugin.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.joinfaces</groupId>
+                <artifactId>joinfaces-dependencies</artifactId>
+                <version>${joinfaces.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -55,6 +66,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.joinfaces</groupId>
             <artifactId>security-spring-boot-starter</artifactId>
             <version>${joinfaces.version}</version>
@@ -63,13 +79,21 @@
         <dependency>
             <groupId>org.joinfaces</groupId>
             <artifactId>primefaces-spring-boot-starter</artifactId>
-            <version>${joinfaces.version}</version>
+            <!--<version>${joinfaces.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.joinfaces</groupId>
             <artifactId>omnifaces3-spring-boot-starter</artifactId>
-            <version>${joinfaces.version}</version>
+            <version>${joinfaces.version}</version>-->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
         </dependency>
 
         <!-- special test dependencies -->
@@ -86,9 +110,16 @@
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>3.9</version>
+            <version>3.11.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.icegreen</groupId>
+            <artifactId>greenmail-junit5</artifactId>
+            <version>1.6.12</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -96,7 +127,7 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <release>11</release>
+                    <release>17</release>
                 </configuration>
             </plugin>
             <!-- Enable jacoco analysis -->
@@ -113,7 +144,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
+                <version>0.8.8</version>
                 <configuration>
                     <propertyName>coverageAgent</propertyName>
                 </configuration>

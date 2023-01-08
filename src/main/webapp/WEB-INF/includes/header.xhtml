@@ -10,9 +10,9 @@
 <ui:composition>
     <h:form rendered="#{!hideHeader}">
         <p:menubar>
-            <p:menuitem value="Home" rendered="#{sessionInfoBean.loggedIn}" action="/secured/home.xhtml" />
+            <p:menuitem value="Home" url="/secured/home.xhtml" rendered="#{sessionInfoBean.loggedIn}"  />
 
-            <p:menuitem value="Explore" rendered="#{sessionInfoBean.loggedIn}" />
+            <p:menuitem value="Explore" url="/secured/explore.xhtml" rendered="#{sessionInfoBean.loggedIn}" />
 
             <p:divider layout="vertical" rendered="#{sessionInfoBean.loggedIn}"/>
 
