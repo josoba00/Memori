@@ -20,10 +20,8 @@ import java.util.TreeSet;
 public class AdminController {
 
     @Autowired
-    @Transient
-    private UserService userService;
+    private  UserService userService;
     @Autowired
-    @Transient
     private DeckService deckService;
 
     public enum DoDeleteUserErrors {

@@ -5,6 +5,7 @@ import at.qe.skeleton.model.User;
 import freemarker.template.Template;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@Scope("application")
 public class EmailSenderService implements MessageSenderService {
     private final JavaMailSender mailSender;
     private final FreeMarkerConfigurer freeMarkerConfigurer;

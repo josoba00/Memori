@@ -2,6 +2,7 @@ package at.qe.skeleton.ui.controllers;
 
 import at.qe.skeleton.model.User;
 import at.qe.skeleton.services.UserService;
+
 import java.io.Serializable;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class UserListController implements Serializable {
 
     @Autowired
-    private UserService userService;
+    private transient UserService userService;
 
     /**
      * Returns a list of all users.
