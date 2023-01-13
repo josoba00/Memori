@@ -5,17 +5,17 @@ import at.qe.skeleton.services.DeckService;
 import at.qe.skeleton.ui.beans.SessionInfoBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import java.io.Serializable;
 import java.util.Collection;
 
-@Component
+@Controller
 @Scope("view")
 
 public class DeckListController implements Serializable {
     @Autowired
-    private DeckService deckService;
+    private transient DeckService deckService;
     @Autowired
     private SessionInfoBean sessionInfoBean;
 

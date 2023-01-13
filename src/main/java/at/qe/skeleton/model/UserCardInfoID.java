@@ -2,7 +2,6 @@ package at.qe.skeleton.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
 
 @Embeddable
 public class UserCardInfoID implements Serializable {

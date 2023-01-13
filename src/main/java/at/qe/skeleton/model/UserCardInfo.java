@@ -4,13 +4,14 @@ package at.qe.skeleton.model;
 import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.function.Function;
 
 @Entity
 @Table(name = "user_card_info")
-public class UserCardInfo implements Persistable<UserCardInfoID> {
+public class UserCardInfo implements Persistable<UserCardInfoID>, Serializable {
     
     @EmbeddedId
     private UserCardInfoID id;

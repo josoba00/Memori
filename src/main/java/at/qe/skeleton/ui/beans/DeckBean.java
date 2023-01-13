@@ -31,9 +31,9 @@ public class DeckBean implements Serializable {
     @Autowired
     private SessionInfoBean sessionInfoBean;
     @Autowired
-    private DeckService deckService;
+    private transient DeckService deckService;
     @Autowired
-    private UserService userService;
+    private  transient UserService userService;
 
     private List<Deck> personalDecks;
     private List <Deck> savedDecks;

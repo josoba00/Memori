@@ -2,10 +2,11 @@ package at.qe.skeleton.ui.controllers;
 
 import at.qe.skeleton.model.User;
 import at.qe.skeleton.services.UserService;
-import java.io.Serializable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import java.io.Serializable;
 
 /**
  * Controller for the user detail view.
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class UserDetailController implements Serializable {
 
     @Autowired
-    private UserService userService;
+    private transient UserService userService;
 
     /**
      * Attribute to cache the currently displayed user

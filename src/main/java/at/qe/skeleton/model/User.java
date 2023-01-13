@@ -20,8 +20,6 @@ import org.springframework.data.domain.Persistable;
 @Table(name = "users")
 public class User implements Persistable<String>, Serializable, Comparable<User> {
     
-    private static final long serialVersionUID = 1L;
-    
     @Id
     @Column(length = 100)
     private String username;

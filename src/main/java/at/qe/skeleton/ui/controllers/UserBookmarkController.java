@@ -6,7 +6,7 @@ import at.qe.skeleton.services.UserService;
 import at.qe.skeleton.ui.beans.SessionInfoBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,14 +15,14 @@ import java.util.List;
  * Controller to handle and manipulate bookmarks of the current User.
  *
  */
-@Component
+@Controller
 @Scope("view")
 public class UserBookmarkController implements Serializable {
 
     @Autowired
-    private UserService userService;
+    private transient UserService userService;
     @Autowired
-    private SessionInfoBean sessionInfoBean;
+    private  SessionInfoBean sessionInfoBean;
     private User getCurrentUser(){
         return sessionInfoBean.getCurrentUser();
     }
