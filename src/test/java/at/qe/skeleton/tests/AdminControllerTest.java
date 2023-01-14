@@ -310,7 +310,7 @@ public class AdminControllerTest {
                 true,
                 UserCreationFields.userRoles
         );
-        assertNull(adminController.createNewUser(user1));
+        assertTrue(adminController.createNewUser(user1).isEmpty());
         Set<AdminController.UserCreationErrors> errors = adminController.createNewUser(user2);
         assertEquals(1, errors.size());
         assertTrue(errors.contains(AdminController.UserCreationErrors.EMAIL_ALREADY_EXISTS));
@@ -346,7 +346,7 @@ public class AdminControllerTest {
                 eMail,
                 UserCreationFields.userRoles
         );
-        assertNull(errors);
+        assertTrue(errors.isEmpty());
     }
 
 

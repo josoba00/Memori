@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
-
 import javax.management.InstanceAlreadyExistsException;
-import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;

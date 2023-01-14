@@ -2,12 +2,8 @@ package at.qe.skeleton.repositories;
 
 import java.io.Serializable;
 import java.util.List;
-
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
-
-import javax.transaction.Transactional;
 
 /**
  * Common base repository for all other repositories. Provides basic methods for
