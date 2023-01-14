@@ -1,9 +1,6 @@
 package at.qe.skeleton.services;
 
-import at.qe.skeleton.model.Card;
-import at.qe.skeleton.model.Deck;
-import at.qe.skeleton.model.DeckStatus;
-import at.qe.skeleton.model.User;
+import at.qe.skeleton.model.*;
 import at.qe.skeleton.repositories.DeckRepository;
 import at.qe.skeleton.ui.beans.SessionInfoBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +29,7 @@ public class DeckService {
     private MessageSenderService messageSenderService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Collection<Deck> getAllDecks() {return deckRepository.findAll();}
+    public List<Deck> getAllDecks() {return deckRepository.findAll();}
 
     public Deck saveDeck(Deck deck) {
         if (deck.isNew()) {
@@ -42,10 +39,12 @@ public class DeckService {
     }
 
     public void deleteDeck(Deck deck, User currentUser){
-        if (currentUser.getBookmarks().contains(deck)){
-            userService.deleteBookmark(currentUser, deck);
+        if (currentUser.equals(deck.getCreator()) || currentUser.getRoles().contains(UserRole.ADMIN)){
+            for (User user : userService.getAllUsers()){
+                userService.deleteBookmark(user, deck);
+            }
+            deckRepository.delete(deck);
         }
-        deckRepository.delete(deck);
     }
 
     public Deck loadDeck(Long id){
@@ -110,5 +109,4 @@ public class DeckService {
         }
         deck.setStatus(DeckStatus.PRIVATE);
     }
-
 }
