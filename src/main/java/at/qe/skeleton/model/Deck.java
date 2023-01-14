@@ -131,14 +131,10 @@ public class Deck implements DeckInterface, Persistable<Long>, Serializable, Com
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof Deck)) {
+        if (!(obj instanceof final Deck other)) {
             return false;
         }
-        final Deck other = (Deck) obj;
-        if (!Objects.equals(this.getId(), other.getId())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.getId(), other.getId());
     }
 
     @Override

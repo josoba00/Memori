@@ -5,10 +5,7 @@ import at.qe.skeleton.model.User;
 import at.qe.skeleton.model.UserCardInfo;
 import at.qe.skeleton.model.UserCardInfoID;
 import java.util.Date;
-
-
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Repository for managing {@link UserCardInfo} entities.

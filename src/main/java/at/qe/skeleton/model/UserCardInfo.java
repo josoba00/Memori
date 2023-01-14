@@ -65,7 +65,7 @@ public class UserCardInfo implements Persistable<UserCardInfoID>, Serializable {
     }
     
     public void setRepetitionDate(Function<UserCardInfo, Date> function) {
-        assert function != null;
+        if (function == null) throw new NullPointerException();
         this.repetitionDate = function.apply(this);
     }
     

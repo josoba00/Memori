@@ -7,6 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 /**
  * Tests for {@link DeckBean}
  *
@@ -37,13 +40,13 @@ public class DeckBeanTest {
     @Test
     @DisplayName("Global Filter Function returns True when Filter is null or empty")
     public void globalFilterNull(){
-        assert(deckBean.globalFilterFunction(deck1,null,null));
-        assert(deckBean.globalFilterFunction(deck2,null,null));
-        assert(deckBean.globalFilterFunction(null,null,null));
+        assertTrue(deckBean.globalFilterFunction(deck1,null,null));
+        assertTrue(deckBean.globalFilterFunction(deck2,null,null));
+        assertTrue(deckBean.globalFilterFunction(null,null,null));
 
-        assert(deckBean.globalFilterFunction(deck1,"",null));
-        assert(deckBean.globalFilterFunction(deck2,"",null));
-        assert(deckBean.globalFilterFunction(null,"",null));
+        assertTrue(deckBean.globalFilterFunction(deck1,"",null));
+        assertTrue(deckBean.globalFilterFunction(deck2,"",null));
+        assertTrue(deckBean.globalFilterFunction(null,"",null));
     }
 
     @Test
@@ -51,12 +54,12 @@ public class DeckBeanTest {
     public void globalFilterName(){
         deck1.setDescription("");
         deck2.setDescription("");
-        assert(deckBean.globalFilterFunction(deck1,"spanish",null));
-        assert(!deckBean.globalFilterFunction(deck2,"spanish",null));
-        assert(deckBean.globalFilterFunction(deck1,"i",null));
-        assert(!deckBean.globalFilterFunction(deck2,"i",null));
-        assert(deckBean.globalFilterFunction(deck2,"man",null));
-        assert(!deckBean.globalFilterFunction(deck1,"man",null));
+        assertTrue(deckBean.globalFilterFunction(deck1,"spanish",null));
+        assertFalse(deckBean.globalFilterFunction(deck2,"spanish",null));
+        assertTrue(deckBean.globalFilterFunction(deck1,"i",null));
+        assertFalse(deckBean.globalFilterFunction(deck2,"i",null));
+        assertTrue(deckBean.globalFilterFunction(deck2,"man",null));
+        assertFalse(deckBean.globalFilterFunction(deck1,"man",null));
     }
 
     @Test
@@ -64,12 +67,12 @@ public class DeckBeanTest {
     public void globalFilterDescription(){
         deck1.setTitle("");
         deck2.setTitle("");
-        assert(deckBean.globalFilterFunction(deck1,"vocab",null));
-        assert(!deckBean.globalFilterFunction(deck2,"vocab",null));
-        assert(deckBean.globalFilterFunction(deck1,"BEGINNERS",null));
-        assert(!deckBean.globalFilterFunction(deck2,"BEGINNERS",null));
-        assert(!deckBean.globalFilterFunction(deck1,"ipsum dolor",null));
-        assert(deckBean.globalFilterFunction(deck2,"ipsum dolor",null));
+        assertTrue(deckBean.globalFilterFunction(deck1,"vocab",null));
+        assertFalse(deckBean.globalFilterFunction(deck2,"vocab",null));
+        assertTrue(deckBean.globalFilterFunction(deck1,"BEGINNERS",null));
+        assertFalse(deckBean.globalFilterFunction(deck2,"BEGINNERS",null));
+        assertFalse(deckBean.globalFilterFunction(deck1,"ipsum dolor",null));
+        assertTrue(deckBean.globalFilterFunction(deck2,"ipsum dolor",null));
     }
 }
 

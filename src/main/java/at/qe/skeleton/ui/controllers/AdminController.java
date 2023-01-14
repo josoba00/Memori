@@ -71,7 +71,6 @@ public class AdminController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     public LockUnlockDeckErrors lockDeck(Deck deck) {
-        // Todo: Add email notification
         if (deck == null) {
             return LockUnlockDeckErrors.DECK_WAS_NULL;
         }
@@ -150,51 +149,57 @@ public class AdminController {
         );
     }
 
+    /**
+     * @param username Must be unique and between 3 and 100 chars
+     * @param email    Must be unique and a valid format
+     * @param roles    Collection of type {@link UserRole}
+     * @return Set of type {@link UserCreationErrors} on error<br>
+     * If set is empty no errors occurred
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     public Set<UserCreationErrors> createNewUser(String username, String password, String firstName, String lastName, String
             email, Collection<UserRole> roles) {
         Set<UserCreationErrors> userCreationErrors = new TreeSet<>();
+        checkUsernameValidAndFree(userCreationErrors, username);
+        checkEmailValidAndFree(userCreationErrors, email);
+        checkUserCreationFieldsNull(userCreationErrors, username, password, firstName, lastName, email, roles);
+        // In case of errors userCreationErrors will hold them, and we can return them.
+        if (userCreationErrors.isEmpty()) {
+            userService.createUser(username, password, firstName, lastName, email, true, roles);
+        }
+        return userCreationErrors;
+    }
+
+    private void checkUsernameValidAndFree(Set<UserCreationErrors> errors, String username) {
+        if (errors == null) throw new NullPointerException("Errors set was null");
         if (username == null) {
-            userCreationErrors.add(UserCreationErrors.USERNAME_NULL);
+            errors.add(UserCreationErrors.USERNAME_NULL);
         } else {
             if (username.length() < 3) {
-                userCreationErrors.add(UserCreationErrors.USERNAME_TO_SHORT);
+                errors.add(UserCreationErrors.USERNAME_TO_SHORT);
             } else if (username.length() > 100) {
-                userCreationErrors.add(UserCreationErrors.USERNAME_TO_LONG);
+                errors.add(UserCreationErrors.USERNAME_TO_LONG);
             }
             // Check if username exists already
             if (userService.loadUser(username) != null) {
-                userCreationErrors.add(UserCreationErrors.USERNAME_ALREADY_EXISTS);
+                errors.add(UserCreationErrors.USERNAME_ALREADY_EXISTS);
             }
         }
-        if (password == null) {
-            userCreationErrors.add(UserCreationErrors.PASSWORD_NULL);
-        }
-        if (firstName == null) {
-            userCreationErrors.add(UserCreationErrors.FIRST_NAME_NULL);
-        }
-        if (lastName == null) {
-            userCreationErrors.add(UserCreationErrors.LAST_NAME_NULL);
-        }
+    }
+
+
+    private void checkEmailValidAndFree(Set<UserCreationErrors> errors, String email) {
+        if (errors == null) throw new NullPointerException("Errors set was null");
         if (email == null) {
-            userCreationErrors.add(UserCreationErrors.EMAIL_NULL);
+            errors.add(UserCreationErrors.EMAIL_NULL);
         } else {
             if (!checkEmailIsValid(email)) {
-                userCreationErrors.add(UserCreationErrors.EMAIL_WRONG_FORMAT);
+                errors.add(UserCreationErrors.EMAIL_WRONG_FORMAT);
             }
-            if (userService.loadUserByMail(email).size() > 0) {
-                userCreationErrors.add(UserCreationErrors.EMAIL_ALREADY_EXISTS);
+            if (!userService.loadUserByMail(email).isEmpty()) {
+                errors.add(UserCreationErrors.EMAIL_ALREADY_EXISTS);
             }
         }
-        if (roles == null) {
-            userCreationErrors.add(UserCreationErrors.ROLES_NULL);
-        }
-        // In case of errors userCreationErrors will hold them, and we can return them.
-        if (userCreationErrors.size() > 0) {
-            return userCreationErrors;
-        }
-        userService.createUser(username, password, firstName, lastName, email, true, roles);
-        return null;
     }
 
     public static boolean checkEmailIsValid(String email) {
@@ -204,6 +209,29 @@ public class AdminController {
             return true;
         } catch (AddressException e) {
             return false;
+        }
+    }
+
+    private void checkUserCreationFieldsNull(Set<UserCreationErrors> errors, String username, String password,
+                                             String firstName, String lastName, String email, Collection<UserRole> roles) {
+        if (errors == null) throw new NullPointerException("Errors-set was null");
+        if (password == null) {
+            errors.add(UserCreationErrors.PASSWORD_NULL);
+        }
+        if (firstName == null) {
+            errors.add(UserCreationErrors.FIRST_NAME_NULL);
+        }
+        if (lastName == null) {
+            errors.add(UserCreationErrors.LAST_NAME_NULL);
+        }
+        if (roles == null) {
+            errors.add(UserCreationErrors.ROLES_NULL);
+        }
+        if (username == null) {
+            errors.add(UserCreationErrors.USERNAME_NULL);
+        }
+        if (email == null) {
+            errors.add(UserCreationErrors.EMAIL_NULL);
         }
     }
 }
