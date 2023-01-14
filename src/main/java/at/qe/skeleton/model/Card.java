@@ -21,8 +21,7 @@ public class Card implements CardInterface, Persistable<Long>, Serializable, Com
     private Long id;
 
     @ManyToOne(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            fetch = FetchType.LAZY
     )
     private Deck container;
 
