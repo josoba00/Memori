@@ -3,7 +3,6 @@ package at.qe.skeleton.services;
 import at.qe.skeleton.model.Card;
 import at.qe.skeleton.model.User;
 import at.qe.skeleton.model.UserCardInfo;
-import at.qe.skeleton.repositories.CardRepository;
 import at.qe.skeleton.repositories.UserCardInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -16,96 +15,44 @@ import java.util.*;
 @Scope("application")
 public class LearnService {
 
-
     @Autowired
-    private UserCardInfoRepository userCardInfoRepository;
-
-    private Queue<Card> learningCards = new LinkedList<>();
-
-    private Queue<Card> neverLearnedCards = new LinkedList<>();
-
-    private User currentUser;
-    @Autowired
-    private CardRepository cardRepository;
-
-    public Queue<Card> getLearningCards() {
-        return this.learningCards;
-    }
-
-    public void setLearningCards(Set<Card> cards) {
-        this.learningCards.addAll(findCardsToLearn(cards));
-    }
-
-    public void clearLearningCards() {
-        this.learningCards.clear();
-    }
-
-    public Queue<Card> getNeverLearnedCards() {
-        return this.neverLearnedCards;
-    }
-
-    public void setNeverLearnedCards(Set<Card> cards) {
-        this.neverLearnedCards.addAll(findNeverLearnedCards(cards));
-    }
-
-    public void clearNeverLearnedCards() {
-        this.neverLearnedCards.clear();
-    }
-
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
-    }
+    private transient UserCardInfoRepository userCardInfoRepository;
 
 
     /**
-     * Methods looks through all Cards in a Deck to find those that have repetition date today and before.
+     * Method to find cards that have repetition date today and before.
      *
      * @param cardSet
      * @return found cards
      */
-    private Set<Card> findCardsToLearn(Set<Card> cardSet) {
-        Set<Card> temp = new HashSet<>();
-        for (Card card : cardSet) {
-            UserCardInfo userCardInfo = userCardInfoRepository.findFirstByUserAndCard(this.currentUser, card);
-            if (userCardInfo != null && userCardInfo.getRepetitionDate().before(new Date())) {
-                temp.add(card);
+    public Set<Card> findCardsToLearn(Set<Card> cardSet, User currentUser){
+        Set<Card> storage = new HashSet<>();
+        for(Card card: cardSet){
+            UserCardInfo userCardInfo = userCardInfoRepository.findFirstByUserAndCard(currentUser, card);
+            if( userCardInfo != null && userCardInfo.getRepetitionDate().before(new Date()) ){
+                    storage.add(card);
             }
         }
-        return temp;
+        return storage;
     }
 
     /**
-     * Methods to find Card that have no UserCardInfo aka have never been learned by this user.
-     *
+     * Method to find Cards without UserCardInfos aka those that have never been learned by this user.
      * @param cardSet
-     * @return Set of Cards
+     * @param currentUser
+     * @return
      */
-    private Set<Card> findNeverLearnedCards(Set<Card> cardSet) {
-        Set<Card> temp = new HashSet<>();
-        for (Card card : cardSet) {
-            if (userCardInfoRepository.findFirstByUserAndCard(this.currentUser, card) == null) {
-                temp.add(card);
+    public Set<Card> findNeverLearnedCards(Set<Card> cardSet, User currentUser){
+        Set<Card> storage = new HashSet<>();
+        for(Card card: cardSet){
+            UserCardInfo userCardInfo = userCardInfoRepository.findFirstByUserAndCard(currentUser, card);
+            if( userCardInfo == null){
+                storage.add(card);
             }
         }
-        return temp;
+        return storage;
     }
 
-    //TODO: Think of better method name.
-
-    /**
-     * Method updates UserCardInfo and adds card back to queue if necessary.
-     *
-     * @param learnedCard
-     * @param difficulty
-     */
-    public void updateLearnQueue(Card learnedCard, int difficulty) {
-        UserCardInfo userCardInfo = userCardInfoRepository.findFirstByUserAndCard(currentUser, learnedCard);
-        userCardInfo.setNumberOfRepetitions(userCardInfo.getNumberOfRepetitions() + 1);
-        if (difficulty < 4) {
-            this.learningCards.add(learnedCard);
-        }
-        updateUserCardInfo(userCardInfo, difficulty);
-    }
 
     /**
      * Method calculates new learn Interval according to given algorithm.
@@ -118,23 +65,34 @@ public class LearnService {
         if (difficulty < 3) {
             return 1;
         }
-        return switch (userCardInfo.getNumberOfRepetitions()) {
-            case 1 -> 1;
-            case 2 -> 6;
-            default -> (int) (userCardInfo.getLearnInterval() * userCardInfo.getEfFactor());
-        };
+        if(userCardInfo.getNumberOfRepetitions() == 1){
+            return 1;
+        }
+        else if(userCardInfo.getNumberOfRepetitions() == 2){
+            return 6;
+        }
+        else{
+            return (int)(userCardInfo.getLearnInterval()*userCardInfo.getEfFactor());
+        }
     }
 
     /**
      * Method to update UserCardInfo Repetition-Date, Learn-Interval and if necessary Ef-Factor.
+     * If no UserCardInfo exists for card and currentUser one gets created.
      *
-     * @param userCardInfo
      * @param difficulty
+     * @param card
+     * @param currentUser
      */
-    private void updateUserCardInfo(UserCardInfo userCardInfo, int difficulty) {
+    public void updateUserCardInfo(Card card, User currentUser, int difficulty){
+        UserCardInfo userCardInfo = userCardInfoRepository.findFirstByUserAndCard(currentUser, card);
+        if(userCardInfo == null){
+            userCardInfo = generateNewUserCardInfo(card, currentUser);
+        }
+        userCardInfo.setNumberOfRepetitions(userCardInfo.getNumberOfRepetitions()+1);
         userCardInfo.setLearnInterval(findNewLearnInterval(userCardInfo, difficulty));
-        userCardInfo.setRepetitionDate(calculateNewDate(userCardInfo.getLearnInterval(), userCardInfo.getRepetitionDate()));
-        if (difficulty > 2) {
+        userCardInfo.setRepetitionDate(calculateNewDate(userCardInfo.getLearnInterval()));
+        if(difficulty > 2 && userCardInfo.getNumberOfRepetitions()>2){
             userCardInfo.setEfFactor(calculateNewEfFactor(userCardInfo.getEfFactor(), difficulty));
         }
     }
@@ -151,44 +109,24 @@ public class LearnService {
     }
 
     /**
-     * Method to add days to given date.
+     * Method to find new Date in given amount of days from today.
      *
-     * @param days
-     * @param oldDate
+     * @param days number of days
      * @return new Date
      */
-    private Date calculateNewDate(int days, Date oldDate) {
-        return Date.from(oldDate.toInstant().plus(days, ChronoUnit.DAYS));
+    private Date calculateNewDate(int days){
+        return Date.from(new Date().toInstant().plus(days, ChronoUnit.DAYS));
     }
 
-    private void generateNewUserCardInfo(Card card) {
+    private UserCardInfo generateNewUserCardInfo(Card card, User currentUser){
         UserCardInfo userCardInfo = new UserCardInfo();
         userCardInfo.setCard(card);
         userCardInfo.setUser(currentUser);
+        userCardInfo.setLearnInterval(0);
+        userCardInfo.setEfFactor(2.5f);
+        userCardInfo.setNumberOfRepetitions(0);
         userCardInfoRepository.save(userCardInfo);
+        return userCardInfo;
     }
-
-    /**
-     * Method returns next card to learn.
-     *
-     * @return null if queue is empty.
-     */
-    public Card getNextCard() {
-        return learningCards.poll();
-    }
-
-    /**
-     * Method returns next nerverLearnedCard and generates UserCardInfo for it.
-     *
-     * @return card with UserCardInfo or null if queue is empty
-     */
-    public Card getNextNewCard() {
-        Card card = neverLearnedCards.poll();
-        if (card != null) {
-            generateNewUserCardInfo(card);
-        }
-        return card;
-    }
-
 
 }
