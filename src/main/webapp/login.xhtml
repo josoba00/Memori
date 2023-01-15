@@ -1,3 +1,4 @@
+
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
@@ -7,23 +8,41 @@
                 template="/WEB-INF/templates/main.xhtml">
     <ui:param name="hideHeader" value="true" />
     <ui:define name ="content">
-        <form id="login_form" action="#{request.contextPath}/login" method="post">
-            <div style="width: max(400px, 30%); margin: 10% auto;">
-                <p:staticMessage severity="error" summary="ERROR" detail="Wrong Input!" style="width: 100%" rendered="#{param.error != null}"/>
-                <br> </br>
-                <h:panelGrid columns="2" style="margin: auto;">
-                    <p:outputLabel for="username" value="Username:"/>
-                    <p:inputText id="username" type="text" required="true"/>
+        <style>
+            .ui-button-text {
+                color: black;
+                background-color: #9EB248;
+                border-width: initial;
+            }
+            body{
+                background-color: #282828
+            }
+        </style>
+        <form id="login_form" action="#{request.contextPath}/login" method="post">                
+            <div style="display: flex; align-items: center">
+                <div style="width: 50%; background-color: #383838">
+                    <h:graphicImage value="\images\Memori_LoginLogo.PNG" style="width:50%; margin: 20% auto; display: block;" />
+                </div>
+                <div style="width: 35%; margin: auto 10% auto 5%">
+                    <form id="login_form" action="#{request.contextPath}/login" method="post" style="display: flex; flex-direction: column; align-items: center;">
+                        <p:staticMessage severity="error" summary="ERROR" detail="Username or password is wrong!" style="width: 100%; margin: 5% 5%" rendered="#{param.error != null}"/>
+                        <br/>
+                        <div style="display:grid; margin: auto 0% auto 10%;">
+                            <p:outputLabel for="username" value="Username:" style="color: white"/>
+                            <p:inputText id="username" type="text" required="true" style="background-color: #383838; color: #D0D0D0"/>
+                            <p:outputLabel for="password" value="Password:" style="color: white; margin: 5% 0 0 0"/>
+                            <p:inputText id="password" type="password" required="true" style="background-color: #383838; color: #D0D0D0"/>
+                            <br/>
+                            <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                    style="display: block; width: 50%; margin: 5% auto; border-color: #383838">
+                                <span class="ui-button-text" style="">Login</span>
+                            </button>
+                        </div>
 
-                    <p:outputLabel for="password" value="Password:"/>
-                    <p:inputText id="password" type="password" required="true"/>
-
-                </h:panelGrid>
-                <br> </br>
-                <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="display: block; width: 40%; margin: auto">
-                    <span class="ui-button-text" style="">Login</span>
-                </button>
+                    </form>
+                </div>
             </div>
+
         </form>
     </ui:define>
 </ui:composition>
