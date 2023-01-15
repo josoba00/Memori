@@ -4,25 +4,26 @@ package at.qe.skeleton.model;
 import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.function.Function;
 
 @Entity
 @Table(name = "user_card_info")
-public class UserCardInfo implements Persistable<UserCardInfoID> {
+public class UserCardInfo implements Persistable<UserCardInfoID>, Serializable {
     
     @EmbeddedId
     private UserCardInfoID id;
     
     @ManyToOne(
-        fetch = FetchType.LAZY
+        fetch = FetchType.EAGER
     )
     @MapsId("cardId")
     private Card card;
     
     @ManyToOne(
-        fetch = FetchType.LAZY
+        fetch = FetchType.EAGER
     )
     @MapsId("username")
     private User user;
@@ -64,7 +65,7 @@ public class UserCardInfo implements Persistable<UserCardInfoID> {
     }
     
     public void setRepetitionDate(Function<UserCardInfo, Date> function) {
-        assert function != null;
+        if (function == null) throw new NullPointerException();
         this.repetitionDate = function.apply(this);
     }
     
@@ -135,10 +136,9 @@ public class UserCardInfo implements Persistable<UserCardInfoID> {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof UserCardInfo)) {
+        if (!(obj instanceof UserCardInfo other)) {
             return false;
         }
-        UserCardInfo other = (UserCardInfo) obj;
         return this.getNotNullableId().equals(other.getNotNullableId());
     }
     

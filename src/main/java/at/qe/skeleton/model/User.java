@@ -1,13 +1,13 @@
 package at.qe.skeleton.model;
 
+import org.springframework.data.domain.Persistable;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.*;
-
-import org.springframework.data.domain.Persistable;
 
 /**
  * Entity representing users.
@@ -19,8 +19,6 @@ import org.springframework.data.domain.Persistable;
 @Entity
 @Table(name = "users")
 public class User implements Persistable<String>, Serializable, Comparable<User> {
-    
-    private static final long serialVersionUID = 1L;
     
     @Id
     @Column(length = 100)
@@ -41,17 +39,16 @@ public class User implements Persistable<String>, Serializable, Comparable<User>
     
     @OneToMany(
         mappedBy = "creator",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
+        fetch = FetchType.EAGER,
+        orphanRemoval = true
     )
     private Set<Deck> createdDecks = new HashSet<>();
     
     @ManyToMany(
-        fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL
+        fetch = FetchType.EAGER
     )
-    @JoinTable(name = "bookmarks",
+    @JoinTable(
+        name = "bookmarks",
         joinColumns = @JoinColumn(name = "user_username"),
         inverseJoinColumns = @JoinColumn(name = "deck_id")
     )
@@ -59,7 +56,7 @@ public class User implements Persistable<String>, Serializable, Comparable<User>
     
     @OneToMany(
         mappedBy = "user",
-        cascade = CascadeType.ALL,
+        fetch = FetchType.EAGER,
         orphanRemoval = true
     )
     private Set<UserCardInfo> cardInfos;
@@ -178,10 +175,9 @@ public class User implements Persistable<String>, Serializable, Comparable<User>
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof User)) {
+        if (!(obj instanceof final User other)) {
             return false;
         }
-        final User other = (User) obj;
         return Objects.equals(this.username, other.username);
     }
     

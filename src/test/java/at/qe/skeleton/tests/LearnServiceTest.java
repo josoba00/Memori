@@ -1,233 +1,127 @@
 package at.qe.skeleton.tests;
 
 import at.qe.skeleton.model.*;
-import at.qe.skeleton.repositories.CardRepository;
-import at.qe.skeleton.repositories.DeckRepository;
 import at.qe.skeleton.repositories.UserCardInfoRepository;
-import at.qe.skeleton.repositories.UserRepository;
-import at.qe.skeleton.services.DeckService;
 import at.qe.skeleton.services.LearnService;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.management.InstanceAlreadyExistsException;
-import javax.transaction.Transactional;
-
-import java.util.List;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 
 @SpringBootTest
 @WebAppConfiguration
 public class LearnServiceTest {
     @Autowired
-    private LearnService learnService;
-    @Autowired
-    private DeckRepository deckRepository;
+    LearnService mockLearnService;
+    @Mock
+    UserCardInfoRepository mockUserCardInfoRepository;
 
-    @Autowired
-    private DeckService deckService;
-    @Autowired
-    private UserRepository userRepository;
+    User testUser = new User();
+    Deck testDeck = new Deck();
+    Card testCard1 = new Card();
+    UserCardInfo testInfo1 = new UserCardInfo();
+    Card testCard2 = new Card();
+    UserCardInfo testInfo2 = new UserCardInfo();
 
-    @Autowired
-    private CardRepository cardRepository;
-    @Autowired
-    private UserCardInfoRepository userCardInfoRepository;
 
-@Transactional
-    @Test
-    @DirtiesContext
-    public void setLearningCardsTest(){
-        learnService.clearLearningCards();
-        User testUser = userRepository.findFirstByUsername("user1");
-        learnService.setCurrentUser(testUser);
-        Deck deck = deckRepository.getReferenceById(1L);
-        learnService.setLearningCards(deck.getContent());
+    @BeforeEach
+    void setUp(){
+        testUser.setUsername("testUser");
 
-        assertEquals(deck.getContent().size(), learnService.getLearningCards().size());
+        testCard1.setCardId(-10L);
+        testInfo1.setCard(testCard1);
+        testInfo1.setUser(testUser);
+        testInfo1.setRepetitionDate(new Date());
+        testInfo1.setEfFactor(2.5f);
+        testInfo1.setLearnInterval(1);
 
-    }
+        testCard2.setCardId(-11L);
+        testInfo2.setCard(testCard2);
+        testInfo2.setUser(testUser);
+        testInfo2.setRepetitionDate(Date.from(new Date().toInstant().plus(2, ChronoUnit.DAYS)));
 
-    @Test
-    @DirtiesContext
-    @Transactional
-    public void setNeverLearnedCardsTest() throws InstanceAlreadyExistsException {
-        User testUser = userRepository.findFirstByUsername("user1");
-        learnService.setCurrentUser(testUser);
-        Deck deck = deckRepository.getReferenceById(1L);
+        testDeck.setContent(Set.of(testCard1, testCard2));
 
-        Card testCard = new Card();
-        testCard.setContainer(deck);
-        testCard.setId(500L);
-        deckService.addCardToDeck(testCard, deck);
-
-        learnService.setNeverLearnedCards(deck.getContent());
-
-        assertEquals(1, learnService.getNeverLearnedCards().size());
-    }
-
-    @Test
-    @Transactional
-    @DisplayName("Testing if Card added back to queue when difficulty < 4.")
-    public void addingBackToQueueTest(){
-        User testUser = userRepository.findFirstByUsername("user1");
-        learnService.setCurrentUser(testUser);
-        Deck deck = deckRepository.getReferenceById(1L);
-
-        Card testCard = cardRepository.getReferenceById(1L);
-
-        learnService.updateLearnQueue(testCard, 3);
-        assertEquals(List.of(testCard).toString(),learnService.getLearningCards().toString());
-    }
-
-    @Test
-    @Transactional
-    @DisplayName("Testing if Card not added back to queue when difficulty >= 4.")
-    public void notAddingBackToQueueTest(){
-        User testUser = userRepository.findFirstByUsername("user1");
-        learnService.setCurrentUser(testUser);
-        Deck deck = deckRepository.getReferenceById(1L);
-
-        Card testCard = cardRepository.getReferenceById(1L);
-
-        learnService.updateLearnQueue(testCard, 4);
-        assertEquals(List.of().toString(),learnService.getLearningCards().toString());
+        mockLearnService = new LearnService();
+        ReflectionTestUtils.setField(mockLearnService, "userCardInfoRepository", mockUserCardInfoRepository);
     }
 
 
+
     @Test
-    @Transactional
-    @DisplayName("Testing modification of UserCardInfo when difficulty > 2 and n = 0.")
-    public void learnIntervalN0Test(){
-        User testUser = userRepository.findFirstByUsername("user1");
-        learnService.setCurrentUser(testUser);
+    void findCardsToLearnTest(){
+        when(mockUserCardInfoRepository.findFirstByUserAndCard(testUser, testCard1)).thenReturn(testInfo1);
+        when(mockUserCardInfoRepository.findFirstByUserAndCard(testUser, testCard2)).thenReturn(testInfo2);
 
-        UserCardInfoID testId = new UserCardInfoID(1L, "user1");
-
-        UserCardInfo info = userCardInfoRepository.getReferenceById(testId);
-        info.setNumberOfRepetitions(0);
-
-        Card testCard = cardRepository.getReferenceById(1L);
-
-        learnService.updateLearnQueue(testCard, 3);
-
-        assertEquals(1, userCardInfoRepository.getReferenceById(testId).getLearnInterval());
+        assertEquals(Set.of(testCard1), mockLearnService.findCardsToLearn(testDeck.getContent(), testUser));
     }
 
     @Test
-    @Transactional
-    @DisplayName("Testing modification of UserCardInfo when difficulty > 2 and n = 1.")
-    public void learnIntervalN1Test(){
-        User testUser = userRepository.findFirstByUsername("user1");
-        learnService.setCurrentUser(testUser);
+    void findNeverLearnedCardTest(){
+        when(mockUserCardInfoRepository.findFirstByUserAndCard(testUser, testCard1)).thenReturn(testInfo1);
+        when(mockUserCardInfoRepository.findFirstByUserAndCard(testUser, testCard2)).thenReturn(null);
 
-        UserCardInfoID testId = new UserCardInfoID(1L, "user1");
+        assertEquals(Set.of(testCard2), mockLearnService.findNeverLearnedCards(testDeck.getContent(), testUser));
+    }
 
-        UserCardInfo info = userCardInfoRepository.getReferenceById(testId);
-        info.setNumberOfRepetitions(1);
+    @ParameterizedTest
+    @CsvSource({"0,0,1","0,1,1", "0,2,1",
+                "1,0,1","1,1,1","1,2,1",
+                "2,0,1","2,1,1","2,2,1",
+                "3,0,1","3,1,6","3,2,2",
+                "4,0,1","4,1,6","4,2,2"
+            })
+    void updateIntervalTest(int difficulty, int repetitions, int expected){
+        testInfo1.setNumberOfRepetitions(repetitions);
+        when(mockUserCardInfoRepository.findFirstByUserAndCard(testUser, testCard1)).thenReturn(testInfo1);
 
-        Card testCard = cardRepository.getReferenceById(1L);
+       mockLearnService.updateUserCardInfo(testCard1, testUser, difficulty);
 
-        learnService.updateLearnQueue(testCard, 3);
 
-        assertEquals(6, userCardInfoRepository.getReferenceById(testId).getLearnInterval());
+        assertEquals(expected, testInfo1.getLearnInterval());
+
+    }
+
+    @ParameterizedTest
+    @CsvSource({"0,0,2.5","0,1,2.5", "0,2,2.5",
+                "1,0,2.5","1,1,2.5","1,2,2.5",
+                "2,0,2.5","2,1,2.5","2,2,2.5",
+                "3,0,2.5","3,1,2.5","3,2,2.36",
+                "4,0,2.5","4,1,2.5","4,2,2.5",
+                "5,0,2.5","5,1,2.5","5,2,2.6"
+    })
+    void updateEfFactorTest(int difficulty, int repetitions, float expected){
+        testInfo1.setNumberOfRepetitions(repetitions);
+        testInfo1.setEfFactor(2.5f);
+        when(mockUserCardInfoRepository.findFirstByUserAndCard(testUser, testCard1)).thenReturn(testInfo1);
+
+        mockLearnService.updateUserCardInfo(testCard1, testUser, difficulty);
+
+
+        assertEquals(expected, testInfo1.getEfFactor());
     }
 
     @Test
-    @Transactional
-    @DisplayName("Testing modification of UserCardInfo when difficulty > 2 and n = 2.")
-    public void learnIntervalN2Test(){
-        User testUser = userRepository.findFirstByUsername("user1");
-        learnService.setCurrentUser(testUser);
+    void updateNumberRepetitionsTest(){
+        testInfo1.setNumberOfRepetitions(1);
+        when(mockUserCardInfoRepository.findFirstByUserAndCard(testUser, testCard1)).thenReturn(testInfo1);
 
-        UserCardInfoID testId = new UserCardInfoID(1L, "user1");
+        mockLearnService.updateUserCardInfo(testCard1, testUser, 4);
 
-        UserCardInfo info = userCardInfoRepository.getReferenceById(testId);
-        info.setNumberOfRepetitions(2);
+        assertEquals(2, testInfo1.getNumberOfRepetitions());
 
-        Card testCard = cardRepository.getReferenceById(1L);
-
-        learnService.updateLearnQueue(testCard, 3);
-
-        assertEquals(5, userCardInfoRepository.getReferenceById(testId).getLearnInterval());
     }
-
-    @Test
-    @Transactional
-    public void incrementNumberRepetitionsTest(){
-        User testUser = userRepository.findFirstByUsername("user1");
-        learnService.setCurrentUser(testUser);
-
-        UserCardInfoID testId = new UserCardInfoID(1L, "user1");
-
-        UserCardInfo info = userCardInfoRepository.getReferenceById(testId);
-        info.setNumberOfRepetitions(2);
-
-        Card testCard = cardRepository.getReferenceById(1L);
-
-        learnService.updateLearnQueue(testCard, 3);
-
-        assertEquals(3, userCardInfoRepository.getReferenceById(testId).getNumberOfRepetitions());
-    }
-
-    @Test
-    @Transactional
-    public void modificationOfEfFactorDiff2Test(){
-        User testUser = userRepository.findFirstByUsername("user1");
-        learnService.setCurrentUser(testUser);
-
-        UserCardInfoID testId = new UserCardInfoID(1L, "user1");
-
-        UserCardInfo info = userCardInfoRepository.getReferenceById(testId);
-        info.setNumberOfRepetitions(2);
-        info.setEfFactor(2.4f);
-
-        Card testCard = cardRepository.getReferenceById(1L);
-
-        learnService.updateLearnQueue(testCard, 2);
-
-        assertEquals(2.4f, info.getEfFactor());
-    }
-
-    @Test
-    @Transactional
-    public void modificationOfEfFactorDiff3Test(){
-        User testUser = userRepository.findFirstByUsername("user1");
-        learnService.setCurrentUser(testUser);
-
-        UserCardInfoID testId = new UserCardInfoID(1L, "user1");
-
-        UserCardInfo info = userCardInfoRepository.getReferenceById(testId);
-        info.setNumberOfRepetitions(2);
-        info.setEfFactor(2.4f);
-
-        Card testCard = cardRepository.getReferenceById(1L);
-
-        learnService.updateLearnQueue(testCard, 3);
-
-        assertEquals(2.26f, info.getEfFactor());
-    }
-
-    @Test
-    @Transactional
-    public void getNextCardTest(){
-        User testUser = userRepository.findFirstByUsername("user1");
-        learnService.setCurrentUser(testUser);
-
-        Deck deck = deckRepository.getReferenceById(1L);
-        learnService.setLearningCards(deck.getContent());
-
-        Card testCard = new Card();
-        testCard.setCardId(3L);
-
-        assertEquals(testCard, learnService.getNextCard());
-    }
-
-
 }
