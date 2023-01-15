@@ -21,6 +21,8 @@ public class UserDetailController implements Serializable {
 
     @Autowired
     private transient UserService userService;
+    @Autowired
+    private transient AdminController adminController;
 
     /**
      * Attribute to cache the currently displayed user
@@ -67,7 +69,7 @@ public class UserDetailController implements Serializable {
      * Action to delete the currently displayed user.
      */
     public void doDeleteUser() {
-        this.userService.deleteUser(user);
+        this.adminController.doDeleteUser(this.user);
         user = null;
     }
 
