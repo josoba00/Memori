@@ -15,12 +15,12 @@ public interface DeckRepository extends AbstractRepository<Deck, Long>{
     @Query("Select u From Deck u WHERE u.status = 'PUBLIC'")
     List<Deck> findAllByStatusIsPublic();
 
-    Deck getReferenceById(Long id);
+    Deck findById(Long id);
 
     List<Deck> findAllByTitleContaining(String title);
 
     @Query("Select u From Deck u WHERE u.status = 'PUBLIC' AND UPPER(u.title) LIKE UPPER(concat('%', ?1,'%')) AND NOT u.creator.username = ?2")
-    public List<Deck> findBySearch(String search, String username);
+    List<Deck> findBySearch(String search, String username);
 
     // Tried with Modifying Annotation and own Query but still didn't work or threw other exception
     @Modifying
