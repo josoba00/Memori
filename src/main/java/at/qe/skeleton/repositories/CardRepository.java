@@ -7,6 +7,8 @@ import java.util.List;
 public interface CardRepository  extends AbstractRepository<Card, Long>{
 
     List<Card> findAllByContainerId(Long containerId);
+    
+    Card findById(Long id);
 
     List<Card> findAllByContainer(Deck container);
 

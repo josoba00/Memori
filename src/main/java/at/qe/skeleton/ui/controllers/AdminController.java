@@ -5,7 +5,6 @@ import at.qe.skeleton.services.DeckService;
 import at.qe.skeleton.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.annotation.Transient;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 

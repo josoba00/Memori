@@ -30,7 +30,7 @@ public class Main extends SpringBootServletInitializer {
     
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(new Class[]{Main.class, CustomServletContextInitializer.class, WebSecurityConfig.class});
+        return application.sources(Main.class, CustomServletContextInitializer.class, WebSecurityConfig.class);
     }
 
     @Bean

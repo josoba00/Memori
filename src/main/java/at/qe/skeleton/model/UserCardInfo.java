@@ -17,13 +17,13 @@ public class UserCardInfo implements Persistable<UserCardInfoID>, Serializable {
     private UserCardInfoID id;
     
     @ManyToOne(
-        fetch = FetchType.LAZY
+        fetch = FetchType.EAGER
     )
     @MapsId("cardId")
     private Card card;
     
     @ManyToOne(
-        fetch = FetchType.LAZY
+        fetch = FetchType.EAGER
     )
     @MapsId("username")
     private User user;
@@ -136,10 +136,9 @@ public class UserCardInfo implements Persistable<UserCardInfoID>, Serializable {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof UserCardInfo)) {
+        if (!(obj instanceof UserCardInfo other)) {
             return false;
         }
-        UserCardInfo other = (UserCardInfo) obj;
         return this.getNotNullableId().equals(other.getNotNullableId());
     }
     

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import javax.management.InstanceAlreadyExistsException;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -70,7 +69,7 @@ public class DeckService {
     }
 
     public void addCardToDeck(Card card, Deck deck) throws InstanceAlreadyExistsException {
-        if (deck.getContent().stream().anyMatch(u -> u.equals(card))) {
+        if (deck.getContent().contains(card)){
             throw new InstanceAlreadyExistsException();
         }
         Set<Card> temp = deck.getContent();

@@ -37,7 +37,7 @@ class DeckServiceTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void testDeckInitialization() {
+    void testDeckInitialization() {
         for (Deck deck : deckService.getAllDecks()) {
             if (DeckStatus.PUBLIC.equals(deck.getStatus())){
                 assertTrue(deck.getStatus().toString().contains(DeckStatus.PUBLIC.toString()));
@@ -75,11 +75,12 @@ class DeckServiceTest {
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void deleteDeckWithAuthorisedUser() {
         User copiedUser = userService.loadUser("user2");
-        Deck toBeDeletedDeck = deckService.loadDeck(2L);
+        Deck toBeDeletedDeck = deckService.loadDeck(3L);
+        assertEquals(copiedUser, toBeDeletedDeck.getCreator(), "user is not the creator of the proposed deck");
 
         assertEquals(3, deckService.getAllDecks().size());
         deckService.deleteDeck(toBeDeletedDeck, copiedUser);
-        assertEquals(2, deckService.getAllDecks().size(), "There are missing Decks");
+        assertEquals(2, deckService.getAllDecks().size(), "deck has not been deleted");
 
         assertFalse(deckService.getAllDecks().contains(toBeDeletedDeck));
     }
@@ -136,9 +137,8 @@ class DeckServiceTest {
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void loadOwnDecks() {
         User copiedUser = userService.loadUser("user2");
-        Deck copiedDeck1 = deckService.loadDeck(2L);
         Deck copiedDeck2 = deckService.loadDeck(3L);
-        assertEquals(List.of(copiedDeck1,copiedDeck2), deckService.loadOwnDecks(copiedUser));
+        assertEquals(List.of(copiedDeck2), deckService.loadOwnDecks(copiedUser));
     }
 
     @Test
@@ -168,7 +168,7 @@ class DeckServiceTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void lockDeckTestAuthorised(){
+    void lockDeckTestAuthorised(){
         Deck deck = new Deck();
         // Deck locking results in an email to the creator, therefore we need a creator and a title
         deck.setCreator(new User(
@@ -188,7 +188,7 @@ class DeckServiceTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void lockDeckNotLocked(){
+    void lockDeckNotLocked(){
         Deck deck = deckService.getAllDecks().stream().filter(u -> u.getStatus().equals(DeckStatus.PRIVATE)).toList().get(0);
 
         assertThrows(IllegalStateException.class, ()->deckService.lockDeck(deck));
@@ -196,7 +196,7 @@ class DeckServiceTest {
 
     @Test
     @WithMockUser(username = "user", authorities = {"LEARNER"})
-    public void lockDeckUnauthorised(){
+    void lockDeckUnauthorised(){
         Deck deck = new Deck();
         deck.setStatus(DeckStatus.PUBLIC);
         assertThrows(org.springframework.security.access.AccessDeniedException.class,()-> deckService.lockDeck(deck));
@@ -204,7 +204,7 @@ class DeckServiceTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void unlockDeckAuthorised(){
+    void unlockDeckAuthorised(){
         Deck deck = new Deck();
         deck.setStatus(DeckStatus.LOCKED);
 
@@ -214,7 +214,7 @@ class DeckServiceTest {
 
     @Test
     @WithMockUser(username = "user", authorities = {"LEARNER"})
-    public void unlockDeckUnauthorised(){
+    void unlockDeckUnauthorised(){
         Deck deck = new Deck();
         deck.setStatus(DeckStatus.LOCKED);
 
@@ -223,7 +223,7 @@ class DeckServiceTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void unlockDeckNotLocked(){
+    void unlockDeckNotLocked(){
         Deck deck = deckService.getAllDecks().get(0);
 
         assertThrows(IllegalStateException.class,()-> deckService.unlockDeck(deck));
@@ -232,7 +232,7 @@ class DeckServiceTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void setDeckStatusPublic(){
+    void setDeckStatusPublic(){
         Deck deck = deckService.getAllDecks().stream().filter(u -> u.getStatus().equals(DeckStatus.PRIVATE)).toList().get(0);
 
         deckService.setDeckStatusPublic(deck);
@@ -241,7 +241,7 @@ class DeckServiceTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void setDeckStatusPublicAlreadyPublic(){
+    void setDeckStatusPublicAlreadyPublic(){
         Deck deck = deckService.getAllDecks().stream().filter(u -> u.getStatus().equals(DeckStatus.PUBLIC)).toList().get(0);
 
         assertThrows(IllegalStateException.class, ()->deckService.setDeckStatusPublic(deck));
@@ -249,7 +249,7 @@ class DeckServiceTest {
     }
 
     @Test
-    public void setDeckStatusPrivate(){
+    void setDeckStatusPrivate(){
         Deck deck = new Deck();
         deck.setStatus(DeckStatus.PUBLIC);
 
@@ -259,7 +259,7 @@ class DeckServiceTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void setDeckStatusPrivateAlreadyPrivate(){
+    void setDeckStatusPrivateAlreadyPrivate(){
         Deck deck = deckService.getAllDecks().stream().filter(u -> u.getStatus().equals(DeckStatus.PRIVATE)).toList().get(0);
 
         assertThrows(IllegalStateException.class, ()->deckService.setDeckStatusPrivate(deck));
