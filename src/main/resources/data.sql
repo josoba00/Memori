@@ -17,7 +17,7 @@ INSERT INTO USER_USER_ROLE (USER_USERNAME, ROLES) VALUES ('elvis', 'LEARNER')
 --DECK
 -- deck 1 by user 1
 INSERT INTO DECK (ID, TITLE, STATUS, DESCRIPTION, CREATION_DATE, CREATOR_USERNAME) VALUES(DEFAULT, 'EN to GER Vocab', 'PRIVATE', 'english to german vocabulary', '2016-01-01 00:00:00', 'user1')
--- deck 2 by user 2
+-- deck 2 by elvis
 INSERT INTO DECK (ID, TITLE, STATUS, DESCRIPTION, CREATION_DATE, CREATOR_USERNAME) VALUES(DEFAULT, 'European Capitals', 'PUBLIC', 'for each european country there is its corresponding capital', '2016-02-20 00:00:00', 'elvis')
 -- deck 3 by user 2
 INSERT INTO DECK (ID, TITLE, STATUS, DESCRIPTION, CREATION_DATE, CREATOR_USERNAME) VALUES(DEFAULT, 'Simple maths problems', 'PUBLIC', 'some simple maths problems with their solutions', '2022-12-12 12:13:02', 'user2')

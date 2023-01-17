@@ -4,6 +4,7 @@ import at.qe.skeleton.model.Card;
 import at.qe.skeleton.model.Deck;
 import at.qe.skeleton.model.DeckStatus;
 import at.qe.skeleton.model.User;
+import at.qe.skeleton.repositories.CardRepository;
 import at.qe.skeleton.repositories.DeckRepository;
 import at.qe.skeleton.services.DeckService;
 import at.qe.skeleton.services.UserService;
@@ -29,6 +30,10 @@ class DeckServiceTest {
     DeckService deckService;
     @Autowired
     DeckRepository deckRepository;
+    
+    @Autowired
+    CardRepository cardRepository;
+    
     @Autowired
     UserService userService;
 
@@ -55,7 +60,7 @@ class DeckServiceTest {
     }
 
     @Test
-    @Transactional
+    
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void loadDeckBySearch(){
         String e = "e";
@@ -71,11 +76,11 @@ class DeckServiceTest {
 
     @DirtiesContext
     @Test
-    @Transactional
+    
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void deleteDeckWithAuthorisedUser() {
-        User copiedUser = userService.loadUser("user2");
-        Deck toBeDeletedDeck = deckService.loadDeck(3L);
+        User copiedUser = userService.loadUser("elvis");
+        Deck toBeDeletedDeck = deckService.loadDeck(2L);
         assertEquals(copiedUser, toBeDeletedDeck.getCreator(), "user is not the creator of the proposed deck");
 
         assertEquals(3, deckService.getAllDecks().size());
@@ -86,7 +91,7 @@ class DeckServiceTest {
     }
     @DirtiesContext
     @Test
-    @Transactional
+    
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void deleteDeckWithUnauthorisedUser() {
         User unauthorised = userService.loadUser("user1");
@@ -101,7 +106,7 @@ class DeckServiceTest {
 
     @DirtiesContext
     @Test
-    @Transactional
+    
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void deleteDeckWithAdmin() {
         User adminUser = userService.loadUser("admin");
@@ -126,14 +131,14 @@ class DeckServiceTest {
     }
 
     @Test
-    @Transactional
+    
     void loadDecksWithTitle() {
         Deck copiedDeck = deckService.loadDeck(1L);
         assertEquals(List.of(copiedDeck), deckService.loadDecksWithTitle("EN"));
     }
 
     @Test
-    @Transactional
+    
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void loadOwnDecks() {
         User copiedUser = userService.loadUser("user2");
@@ -142,7 +147,7 @@ class DeckServiceTest {
     }
 
     @Test
-    @Transactional
+    
     @WithMockUser(username = "user1", authorities = {"LEARNER"})
     void addCardToDeckException() {
         Deck deck = deckService.loadDeck(1L);
@@ -153,17 +158,17 @@ class DeckServiceTest {
     }
 
     @Test
-    @Transactional
+    
     @WithMockUser(username = "user1", authorities = {"LEARNER"})
     void addCardToDeck() throws InstanceAlreadyExistsException {
         Deck deck = deckService.loadDeck(1L);
+        int oldDeckSize = deck.getContent().size();
 
         Card card2 = new Card();
-        card2.setId(20L);
-
         deckService.addCardToDeck(card2, deck);
+        deckService.saveDeck(deck);
         Deck newDeck = deckService.loadDeck(1L);
-        assertTrue(newDeck.getContent().contains(card2));
+        assertEquals(oldDeckSize + 1 , newDeck.getContent().size());
     }
 
     @Test
