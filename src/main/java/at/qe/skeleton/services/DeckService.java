@@ -73,7 +73,7 @@ public class DeckService {
             throw new InstanceAlreadyExistsException();
         }
         card.setContainer(deck);
-        Set<Card> temp = deck.getContent();
+        List<Card> temp = deck.getContent();
         temp.add(card);
         deck.setContent(temp);
     }

@@ -25,7 +25,7 @@ public class LearnService {
      * @param cardSet
      * @return found cards
      */
-    public Set<Card> findCardsToLearn(Set<Card> cardSet, User currentUser){
+    public Set<Card> findCardsToLearn(List<Card> cardSet, User currentUser){
         Set<Card> storage = new HashSet<>();
         for(Card card: cardSet){
             UserCardInfo userCardInfo = userCardInfoRepository.findFirstByUserAndCard(currentUser, card);
@@ -42,7 +42,7 @@ public class LearnService {
      * @param currentUser
      * @return
      */
-    public Set<Card> findNeverLearnedCards(Set<Card> cardSet, User currentUser){
+    public Set<Card> findNeverLearnedCards(List<Card> cardSet, User currentUser){
         Set<Card> storage = new HashSet<>();
         for(Card card: cardSet){
             UserCardInfo userCardInfo = userCardInfoRepository.findFirstByUserAndCard(currentUser, card);

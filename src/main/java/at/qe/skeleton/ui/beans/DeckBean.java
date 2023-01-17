@@ -1,9 +1,13 @@
 package at.qe.skeleton.ui.beans;
 
 import at.qe.skeleton.model.Deck;
+import at.qe.skeleton.model.DeckStatus;
 import at.qe.skeleton.services.DeckService;
 import at.qe.skeleton.services.UserService;
+import at.qe.skeleton.ui.controllers.DeckListController;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -28,9 +32,9 @@ public class DeckBean implements Serializable {
     @Autowired
     private SessionInfoBean sessionInfoBean;
     @Autowired
-    private transient DeckService deckService;
+    private DeckService deckService;
     @Autowired
-    private  transient UserService userService;
+    private UserService userService;
 
     private List<Deck> personalDecks;
     private List <Deck> savedDecks;
@@ -40,10 +44,8 @@ public class DeckBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        this.personalDecks = new ArrayList<>(sessionInfoBean.getCurrentUser().getCreatedDecks());
-        this.savedDecks = new ArrayList<>(sessionInfoBean.getCurrentUser().getBookmarks());
-        savedDecks.isEmpty(); //TODO: ??
-
+        this.personalDecks = new ArrayList<>(userService.loadUser(sessionInfoBean.getCurrentUserName()).getCreatedDecks());
+        this.savedDecks = new ArrayList<>(userService.loadUser(sessionInfoBean.getCurrentUserName()).getBookmarks());
     }
 
     public boolean globalFilterFunction(Object value, Object filter, Locale locale) {

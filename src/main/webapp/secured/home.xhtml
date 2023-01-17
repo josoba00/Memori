@@ -37,10 +37,11 @@
                              paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink} ">
 
                     <f:facet name="header">
-                        <div class="flex justify-content-end">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr">
                             <p:inputText id="globalFilter" onkeyup="PF('personalDeckTable').filter()"
-                                         style="width:300px"
+                                         style="width: min(100%, 300px)"
                                          placeholder="Search"/>
+                            <p:button value="Create Deck" outcome="/secured/edit.xhtml" id="createDeckButton"  style="width: 130px; justify-self: end"/>
                         </div>
                     </f:facet>
 
@@ -63,8 +64,9 @@
 
                         <p:menuButton icon="pi pi-ellipsis-h"
                                       styleClass="rounded-button ui-button-flat ui-button-plain">
-                            <p:menuitem value="Edit" ajax="false" icon="pi pi-pencil"
+                            <p:menuitem value="Edit" ajax="false" icon="pi pi-pencil" url="/secured/edit.xhtml?id=#{deck.id}"
                                         update=":personalDeckForm"/>
+
                             <p:menuitem value="Delete" icon="pi pi-trash" update=":personalDeckForm:personalDeckTable"
                                         action="#{deckBean.deleteDeck(deck)}">
                                 <p:confirm header="Confirmation"

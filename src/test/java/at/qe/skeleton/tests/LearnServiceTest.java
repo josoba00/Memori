@@ -15,6 +15,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,7 +54,7 @@ public class LearnServiceTest {
         testInfo2.setUser(testUser);
         testInfo2.setRepetitionDate(Date.from(new Date().toInstant().plus(2, ChronoUnit.DAYS)));
 
-        testDeck.setContent(Set.of(testCard1, testCard2));
+        testDeck.setContent(List.of(testCard1, testCard2));
 
         mockLearnService = new LearnService();
         ReflectionTestUtils.setField(mockLearnService, "userCardInfoRepository", mockUserCardInfoRepository);
