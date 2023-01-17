@@ -169,7 +169,7 @@ class PersistencyTests {
     @Test
     @DirtiesContext
     void Deck_deleting_willDeleteAllCardsContainedInIt(){
-        Set<Card> containedCards = deck2.getContent();
+        List<Card> containedCards = deck2.getContent();
         assertFalse(containedCards.isEmpty(), "no users bookmarked this deck make sure a corresponding entry in data.sql can be found");
         
         deckRepository.delete(deck2);

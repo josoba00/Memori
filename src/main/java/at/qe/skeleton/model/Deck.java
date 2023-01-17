@@ -4,10 +4,7 @@ import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "deck")
@@ -39,7 +36,7 @@ public class Deck implements DeckInterface, Persistable<Long>, Serializable, Com
         cascade = {CascadeType.MERGE, CascadeType.PERSIST},
         orphanRemoval = true
     )
-    private Set<Card> content = new HashSet<>();
+    private List<Card> content = new ArrayList<>();
     
     @ManyToMany(
         fetch = FetchType.EAGER
@@ -95,11 +92,11 @@ public class Deck implements DeckInterface, Persistable<Long>, Serializable, Com
         this.status = status;
     }
     
-    public Set<Card> getContent() {
+    public List<Card> getContent() {
         return content;
     }
     
-    public void setContent(Set<Card> content) {
+    public void setContent(List<Card> content) {
         this.content = content;
     }
     
