@@ -77,8 +77,11 @@ class PersistencyTests {
     
     @Test
     @DirtiesContext
-    void card_deleting_deletesCard(){
-        cardRepository.delete(card1);
+    void card_deletingThroughContainer_deletesCard(){
+        Deck container = card1.getContainer();
+        assertNotNull(container, "the tested card is not associated with a container make sure the entry in data.sql is correct");
+        container.getContent().remove(card1);
+        deckRepository.save(container);
         assertNull(cardRepository.findById(card1.getId()));
     }
     
@@ -137,6 +140,19 @@ class PersistencyTests {
         List<Deck> bookmarkedDecks = bookmarks.stream().map(b -> deckRepository.getReferenceById(b.getId())).toList();
         assertFalse(bookmarkedDecks.isEmpty(), "bookmarks were not deleted");
         assertEquals(bookmarks.size(), bookmarkedDecks.size(), "some decks seem to have been deleted");
+    }
+    
+    @Test
+    @DirtiesContext
+    void Deck_addingNewCard_cardWillBeContainedInDeck(){
+        Card newCard = new Card();
+        newCard.setContainer(deck2);
+        deck2.getContent().add(newCard);
+        deckRepository.save(deck2);
+        int oldSize = deck2.getContent().size();
+        assertEquals(oldSize, deckRepository.findById(deck2.getId()).getContent().size());
+        
+        
     }
     
     @Test

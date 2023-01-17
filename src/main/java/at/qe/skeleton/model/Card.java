@@ -23,6 +23,7 @@ public class Card implements CardInterface, Persistable<Long>, Serializable, Com
     @ManyToOne(
         fetch = FetchType.EAGER
     )
+    @JoinColumn(nullable = false)
     private Deck container;
     
     private String frontSideContent;
@@ -37,6 +38,10 @@ public class Card implements CardInterface, Persistable<Long>, Serializable, Com
         orphanRemoval = true
     )
     private Set<UserCardInfo> cardInfos;
+    
+    public Card() {
+        this.creationDate = new Date();
+    }
     
     private Long getCardId() {
         return id;
@@ -126,6 +131,6 @@ public class Card implements CardInterface, Persistable<Long>, Serializable, Com
     
     @Override
     public boolean isNew() {
-        return null == creationDate;
+        return null == id;
     }
 }

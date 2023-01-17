@@ -36,6 +36,7 @@ public class Deck implements DeckInterface, Persistable<Long>, Serializable, Com
     @OneToMany(
         mappedBy = "container",
         fetch = FetchType.EAGER,
+        cascade = {CascadeType.MERGE, CascadeType.PERSIST},
         orphanRemoval = true
     )
     private Set<Card> content = new HashSet<>();
@@ -49,6 +50,10 @@ public class Deck implements DeckInterface, Persistable<Long>, Serializable, Com
         inverseJoinColumns = @JoinColumn(name = "user_username")
     )
     private Set<User> bookmarkedBy = new HashSet<>();
+    
+    public Deck() {
+        this.creationDate = new Date();
+    }
     
     public String getTitle() {
         return title;
@@ -149,7 +154,7 @@ public class Deck implements DeckInterface, Persistable<Long>, Serializable, Com
     
     @Override
     public boolean isNew() {
-        return (null == creationDate);
+        return (null == id);
     }
     
     @Override

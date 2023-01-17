@@ -1,6 +1,7 @@
 package at.qe.skeleton.services;
 
 import at.qe.skeleton.model.*;
+import at.qe.skeleton.repositories.CardRepository;
 import at.qe.skeleton.repositories.DeckRepository;
 import at.qe.skeleton.ui.beans.SessionInfoBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class DeckService {
     @Autowired
     private UserService userService;
     @Autowired
+    private CardRepository cardRepository;
+    @Autowired
     private SessionInfoBean sessionInfoBean;
 
     @Autowired
@@ -39,15 +42,12 @@ public class DeckService {
 
     public void deleteDeck(Deck deck, User currentUser){
         if (currentUser.equals(deck.getCreator()) || currentUser.getRoles().contains(UserRole.ADMIN)){
-            for (User user : userService.getAllUsers()){
-                userService.deleteBookmark(user, deck);
-            }
             deckRepository.delete(deck);
         }
     }
 
     public Deck loadDeck(Long id){
-        return deckRepository.getReferenceById(id);
+        return deckRepository.findById(id);
     }
 
     public List<Deck> loadAllForeignPublicDecks(User currentUser){
@@ -72,6 +72,7 @@ public class DeckService {
         if (deck.getContent().contains(card)){
             throw new InstanceAlreadyExistsException();
         }
+        card.setContainer(deck);
         Set<Card> temp = deck.getContent();
         temp.add(card);
         deck.setContent(temp);
