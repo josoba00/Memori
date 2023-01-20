@@ -1,0 +1,41 @@
+:root{
+    /*    
+        --surface-a: #383838;
+        --surface-b: #484848;
+        --surface-c: #585858;
+        --surface-d: #686868;
+        --surface-e: #787878;
+        --surface-f: #ffffff;
+        --text-color: #FFFFFF;
+        --text-color-secondary: #6c757d;
+        --primary-color: #707070;
+        --primary-color-text: #000000;
+    */
+    --customUi-bodyBackgroundColor: #383838;
+    --customUi-backgroundColor1: #383838;
+    --customUi-backgroundColor2: #484848;
+    --customUi-backgroundColor3: #585858;
+
+    --customUi-borderColor1: #5f6061;
+    --customUi-borderColor2: #383838;
+    --customUi-fontColorWhite: #FFFFFF;
+    --customUi-fontColorLightWhite: #CCCCCC;
+    --customUi-fontColorBlack: #000000;
+
+
+
+    /*Buttons*/
+    --customUi-button-background-color: #9EB248;
+    --customUi-button-border-color: #000000;
+
+
+
+    /*Selectable*/
+    --customUi-selectable-buttonBackgroundColor: #484848;
+    --customUi-selectable-selectedButtonBackgroundColor: #536629;
+    
+    /*Icons*/
+    --customUi-popupIconColor: #9EB248;
+
+    --testColor: #33ff00;
+}
