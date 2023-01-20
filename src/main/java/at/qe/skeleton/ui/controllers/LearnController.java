@@ -129,7 +129,6 @@ public class LearnController implements Serializable {
      * @param card
      */
     public void doAddCardBackQueue(Card card) {
-        System.out.println("try do add card back queue");
         if (card == null) {
             return;
         }
@@ -145,7 +144,6 @@ public class LearnController implements Serializable {
      * @param card
      */
     public void updateRepository(Card card) {
-        System.out.println("trying to update repo");
         learnService.updateUserCardInfo(card, this.currentUser, this.difficulty);
     }
     
