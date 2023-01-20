@@ -1,0 +1,5 @@
+@import url('colorsDefine.css');
+
+body{
+    background-color: var(--customUi-bodyBackgroundColor);
+}
