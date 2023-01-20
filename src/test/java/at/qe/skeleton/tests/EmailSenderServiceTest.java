@@ -2,6 +2,7 @@ package at.qe.skeleton.tests;
 
 import at.qe.skeleton.model.Deck;
 import at.qe.skeleton.model.User;
+import at.qe.skeleton.repositories.DeckRepository;
 import at.qe.skeleton.services.EmailSenderService;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
@@ -10,11 +11,12 @@ import com.icegreen.greenmail.util.ServerSetupTest;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateNotFoundException;
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.function.Executable;
-import org.mockito.*;
+import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +55,8 @@ class EmailSenderServiceTest {
     @Autowired
     private FreeMarkerConfigurer freeMarkerConfigurer;
     
-    @Autowired JavaMailSender autowiredJavaMailSender;
+    @Autowired
+    JavaMailSender autowiredJavaMailSender;
     User validUser;
     User userWithNoFirstName;
     User userWithNullEmail;
@@ -74,6 +78,9 @@ class EmailSenderServiceTest {
     Deck deckByValidUserWithNoTitle;
     Deck deckByUserWithNoEmail;
     
+    @Autowired
+    DeckRepository deckRepository;
+    
     @Mock
     Logger spyableLogger;
     @Mock
@@ -86,6 +93,7 @@ class EmailSenderServiceTest {
     
     @Value("${spring.mail.username}")
     String sender;
+    
     @BeforeEach
     void setUp() {
         validUser = new User();
@@ -157,6 +165,7 @@ class EmailSenderServiceTest {
         
         verify(spyableLogger).error(any(String.class), any(User.class), any(String.class), any(String.class), any(MailException.class));
     }
+    
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void sendHtmlMessage_withMailExceptionThrown_shouldLogAsExpected() {
@@ -192,9 +201,9 @@ class EmailSenderServiceTest {
     void sendHtmlMessage_withInvalidUserEmail_shouldLogIllegalArgumentException() {
         mockEmailSenderService = new EmailSenderService(autowiredJavaMailSender, freeMarkerConfigurer, spyableLogger);
         ReflectionTestUtils.setField(mockEmailSenderService, "sender", sender);
-    
+        
         mockEmailSenderService.sendHtmlEmail(userWithNullEmail, VALID_SUBJECT, VALID_HTML_CONTENT);
-    
+        
         verify(spyableLogger).error(any(String.class), any(User.class), any(String.class), any(String.class), any(IllegalArgumentException.class));
     }
     
@@ -211,6 +220,7 @@ class EmailSenderServiceTest {
         
         verify(spyableLogger).error(any(String.class), any(TemplateNotFoundException.class));
     }
+    
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void sendDeckLockMessage_withValidDeck_SendsCorrectHTMLTemplate() throws Exception {
@@ -235,6 +245,35 @@ class EmailSenderServiceTest {
     
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    void sendDeckLockMessage_withValidDeck_SendsCorrectHTMLTemplateToAllBookmarkingUsers() throws Exception {
+        Deck deck2 = deckRepository.findById(2L);
+        autowiredEmailSenderService.sendDeckLockMessage(deck2);
+        assertNotEquals(0, deck2.getBookmarkedBy().size(), "the deck that is tested does not have any bookmarked users");
+        MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
+        assertEquals(deck2.getBookmarkedBy().size() + 1, receivedMessages.length, "the method did not send the correct amount of messagesd");
+        for (User bookmarkingUser : deck2.getBookmarkedBy()) {
+            
+            Map<String, Object> templateModel = new HashMap<>();
+            templateModel.put("userFirstName", bookmarkingUser.getFirstName());
+            templateModel.put("deckTitle", deck2.getTitle());
+            
+            Template freemarkerTemplate = freeMarkerConfigurer.getConfiguration()
+                .getTemplate("bookmarked_deck_lock_mail_template.ftl");
+            String expectedHtmlBody = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModel)
+                .replaceAll("\\s", ""); // it seems like there is an issue with line break types (\n \r\n) when testing on different OS
+            
+            
+            boolean messageIsContained = Arrays.stream(receivedMessages).anyMatch(m -> GreenMailUtil.getBody(m)
+                .replaceAll("\\s", "").contains(expectedHtmlBody));
+            
+            assertTrue(messageIsContained, "Sent body does not contain expected template.");
+        }
+        
+    }
+    
+    
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void sendDeckLockMessage_withValidDeck_setsCorrectRecipientEmailAddress() throws MessagingException {
         String expectedEmail = validUser.getEmail();
         autowiredEmailSenderService.sendDeckLockMessage(deckByValidUser);
@@ -255,5 +294,5 @@ class EmailSenderServiceTest {
         Executable when = () -> autowiredEmailSenderService.sendDeckLockMessage(deckByValidUserWithNoTitle);
         assertThrows(NullPointerException.class, when, "sendDeckLockMessage does not throw NullPointerException if a Deck where deck.title is null is passed.");
     }
-    
+   
 }

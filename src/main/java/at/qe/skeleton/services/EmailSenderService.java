@@ -89,5 +89,23 @@ public class EmailSenderService implements MessageSenderService {
         }
     
         this.sendHtmlEmail(creator, "One of your decks has been locked", htmlBody);
+        
+        for (User bookmarkingUser : deck.getBookmarkedBy()) {
+            String bookmarkingUserFirstName = bookmarkingUser.getFirstName();
+            
+            Map<String, Object> templateModelBookmarked = new HashMap<>();
+            templateModelBookmarked.put("userFirstName", bookmarkingUserFirstName);
+            templateModelBookmarked.put("deckTitle", deckTitle);
+    
+            String bookmarkedHtmlTemplate = null;
+            try {
+                Template freemarkerTemplate = freeMarkerConfigurer.getConfiguration()
+                    .getTemplate("bookmarked_deck_lock_mail_template.ftl");
+                bookmarkedHtmlTemplate = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, templateModelBookmarked);
+            } catch (Exception e) {
+                logger.error("Failed to use template", e);
+            }
+            sendHtmlEmail(bookmarkingUser, "One of your bookmarked Decks has been locked", bookmarkedHtmlTemplate);
+        }
     }
 }
