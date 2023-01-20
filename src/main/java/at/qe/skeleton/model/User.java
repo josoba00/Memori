@@ -57,6 +57,7 @@ public class User implements Persistable<String>, Serializable, Comparable<User>
     @OneToMany(
         mappedBy = "user",
         fetch = FetchType.EAGER,
+        cascade = {CascadeType.MERGE},
         orphanRemoval = true
     )
     private Set<UserCardInfo> cardInfos;

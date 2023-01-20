@@ -5,8 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
-                xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+                xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/templates/main.xhtml">
 
 
@@ -48,7 +47,8 @@
                             <p:inputText id="globalFilter" onkeyup="PF('personalDeckTable').filter()"
                                          style="width: min(100%, 300px)"
                                          placeholder="Search"/>
-                            <p:button value="Create Deck" outcome="/secured/edit.xhtml" id="createDeckButton"  style="width: 130px; justify-self: end"/>
+                            <p:button value="Create Deck" outcome="/secured/edit.xhtml" id="createDeckButton"
+                                      style="width: 130px; justify-self: end"/>
                         </div>
                     </f:facet>
 
@@ -67,11 +67,15 @@
                     </p:column>
 
                     <p:column style="width: 128px; padding: 0">
-                        <p:button value="Learn" styleClass="rounded-button"/>
+                        <p:commandButton value="Learn" update="learnViewDialog"
+                                         action="#{learnController.doInitializeQueues(deck)}"
+                                         oncomplete="PF('learnViewDialog').show()" styleClass="rounded-button">
+                        </p:commandButton>
 
                         <p:menuButton icon="pi pi-ellipsis-h"
                                       styleClass="rounded-button ui-button-flat ui-button-plain">
-                            <p:menuitem value="Edit" ajax="false" icon="pi pi-pencil" url="/secured/edit.xhtml?id=#{deck.id}"
+                            <p:menuitem value="Edit" ajax="false" icon="pi pi-pencil"
+                                        url="/secured/edit.xhtml?id=#{deck.id}"
                                         update=":personalDeckForm"/>
 
                             <p:menuitem value="Delete" icon="pi pi-trash" update=":personalDeckForm:personalDeckTable"
@@ -100,7 +104,8 @@
             </h:form>
         </div>
 
-        <div class="card" style="display: #{param.i!=1 ? 'none' : ''}"> <!-- this is necessary for two primefaces global filters to work (instead of using normal rendered on the form).)-->
+        <div class="card"
+             style="display: #{param.i!=1 ? 'none' : ''}"> <!-- this is necessary for two primefaces global filters to work (instead of using normal rendered on the form).)-->
             <h:form id="savedDeckForm">
                 <p:dataTable id="savedDeckTable" var="deck" value="#{deckBean.savedDecks}"
                              widgetVar="savedDeckTable"
@@ -129,7 +134,11 @@
                         </div>
                     </p:column>
                     <p:column style="width: 128px">
-                        <p:button value="Learn" styleClass="rounded-button"/>
+                        <p:commandButton value="Learn" update="learnViewDialog"
+                                         action="#{learnController.doInitializeQueues(deck)}"
+                                         oncomplete="PF('learnViewDialog').show()" styleClass="rounded-button">
+                        </p:commandButton>
+
                         <p:commandButton styleClass="rounded-button ui-button-flat ui-button-plain" icon="pi pi-trash"
                                          action="#{deckBean.deleteBookmark(deck)}"
                                          update=":savedDeckForm:savedDeckTable">
@@ -146,6 +155,39 @@
                 </p:confirmDialog>
             </h:form>
         </div>
+        <p:dialog header="#{learnController.learningDeck.title}" id="learnViewDialog" widgetVar="learnViewDialog"
+                  modal="true" showEffect="fade"
+                  hideEffect="fade" resizable="false">
+            <p:outputPanel id="cardData">
+                <p:panelGrid columns="1">
+                    <p>
+                        cards left: #{learnController.cardsToLearnAmount}<br/>
+                        new cards: #{learnController.neverLearnedCardsAmount}
+                    </p>
+                </p:panelGrid>
+                <p:panelGrid columns="1">
+                    <p>#{learnController.currentlyDisplayedText}</p>
+                </p:panelGrid>
+                <p:commandButton value="Flip" styleClass="rounded-button"
+                                 action="#{learnController.doGetOtherSideOfCard}" update=":cardData"/>
+                <p:panelGrid columns="7">
+                    <p:commandButton value="0" styleClass="rounded-button"
+                                     action="#{learnController.setDifficulty(0)}"/>
+                    <p:commandButton value="1" styleClass="rounded-button"
+                                     action="#{learnController.setDifficulty(1)}"/>
+                    <p:commandButton value="2" styleClass="rounded-button"
+                                     action="#{learnController.setDifficulty(2)}"/>
+                    <p:commandButton value="3" styleClass="rounded-button"
+                                     action="#{learnController.setDifficulty(3)}"/>
+                    <p:commandButton value="4" styleClass="rounded-button"
+                                     action="#{learnController.setDifficulty(4)}"/>
+                    <p:commandButton value="5" styleClass="rounded-button"
+                                     action="#{learnController.setDifficulty(5)}"/>
+                    <p:commandButton value="Next" styleClass="rounded-button"
+                                     action="#{learnController.doNext}" update=":cardData"/>
+                </p:panelGrid>
+            </p:outputPanel>
+        </p:dialog>
 
 
     </ui:define>

@@ -12,20 +12,18 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 
-import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.*;
 
 @Component
 @Scope("view")
 public class DeckDetailController implements Serializable {
     @Autowired
-    private DeckService deckService;
+    private transient DeckService deckService;
     @Autowired
     private SessionInfoBean sessionInfoBean;
     @Autowired
-    private UserService userService;
+    private transient UserService userService;
     private Deck deck;
     private List<Card> cards;
 

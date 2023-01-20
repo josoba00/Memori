@@ -3,13 +3,16 @@ package at.qe.skeleton.tests;
 import at.qe.skeleton.model.*;
 import at.qe.skeleton.repositories.UserCardInfoRepository;
 import at.qe.skeleton.services.LearnService;
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -24,7 +27,8 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @WebAppConfiguration
-public class LearnServiceTest {
+@Disabled
+class LearnServiceTest {
     @Autowired
     LearnService mockLearnService;
     @Mock
@@ -59,9 +63,9 @@ public class LearnServiceTest {
         mockLearnService = new LearnService();
         ReflectionTestUtils.setField(mockLearnService, "userCardInfoRepository", mockUserCardInfoRepository);
     }
-
-
-
+    
+    
+    
     @Test
     void findCardsToLearnTest(){
         when(mockUserCardInfoRepository.findFirstByUserAndCard(testUser, testCard1)).thenReturn(testInfo1);

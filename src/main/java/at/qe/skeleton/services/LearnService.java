@@ -3,6 +3,7 @@ package at.qe.skeleton.services;
 import at.qe.skeleton.model.Card;
 import at.qe.skeleton.model.User;
 import at.qe.skeleton.model.UserCardInfo;
+import at.qe.skeleton.model.UserCardInfoID;
 import at.qe.skeleton.repositories.UserCardInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -16,7 +17,9 @@ import java.util.*;
 public class LearnService {
 
     @Autowired
-    private transient UserCardInfoRepository userCardInfoRepository;
+    private UserCardInfoRepository userCardInfoRepository;
+    @Autowired
+    private UserService userService;
 
 
     /**
@@ -95,6 +98,10 @@ public class LearnService {
         if(difficulty > 2 && userCardInfo.getNumberOfRepetitions()>2){
             userCardInfo.setEfFactor(calculateNewEfFactor(userCardInfo.getEfFactor(), difficulty));
         }
+        Set<UserCardInfo> infos = currentUser.getCardInfos();
+        infos.add(userCardInfo);
+        currentUser.setCardInfos(infos);
+        userService.saveUser(currentUser);
     }
 
     /**
@@ -120,12 +127,19 @@ public class LearnService {
 
     private UserCardInfo generateNewUserCardInfo(Card card, User currentUser){
         UserCardInfo userCardInfo = new UserCardInfo();
+        UserCardInfoID id = new UserCardInfoID();
+        id.setUsername(currentUser.getUsername());
+        id.setCardId(card.getId());
+        userCardInfo.setId(id);
         userCardInfo.setCard(card);
         userCardInfo.setUser(currentUser);
         userCardInfo.setLearnInterval(0);
         userCardInfo.setEfFactor(2.5f);
         userCardInfo.setNumberOfRepetitions(0);
-        userCardInfoRepository.save(userCardInfo);
+        Set<UserCardInfo>  infos = currentUser.getCardInfos();
+        infos.add(userCardInfo);
+        currentUser.setCardInfos(infos);
+        userService.saveUser(currentUser);
         return userCardInfo;
     }
 
