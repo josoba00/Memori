@@ -44,9 +44,10 @@ public class SessionInfoBean implements Serializable {
             }
             currentUser = userService.loadUser(currentUserName);
         }
+        currentUser = userService.loadUser(getCurrentUserName());
         return currentUser;
     }
-
+    
     /**
      * Returns the username of the user for this session, empty string if no
      * user has been authenticated for this session.

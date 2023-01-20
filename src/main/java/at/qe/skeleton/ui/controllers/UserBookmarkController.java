@@ -2,6 +2,7 @@ package at.qe.skeleton.ui.controllers;
 
 import at.qe.skeleton.model.Deck;
 import at.qe.skeleton.model.User;
+import at.qe.skeleton.services.DeckService;
 import at.qe.skeleton.services.UserService;
 import at.qe.skeleton.ui.beans.SessionInfoBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class UserBookmarkController implements Serializable {
 
     @Autowired
     private transient UserService userService;
+    @Autowired
+    private transient DeckService deckService;
     @Autowired
     private  SessionInfoBean sessionInfoBean;
     private User getCurrentUser(){

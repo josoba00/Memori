@@ -16,60 +16,11 @@ import java.util.Set;
 public class UserBean implements Serializable {
     
     private User user;
-    private Set<AdminController.UserCreationErrors> errors;
     @Autowired
     private transient AdminController adminController;
     public UserBean() {
         this.user = new User();
         this.user.setRoles(new HashSet<>());
-    }
-    
-    public String getUsername() {
-        return this.user.getUsername();
-    }
-    
-    public void setUsername(String username) {
-        this.user.setUsername(username);
-    }
-    
-    public String getPassword() {
-        return this.user.getPassword();
-    }
-    
-    public void setPassword(String password) {
-        this.user.setPassword(password);
-    }
-    
-    public String getFirstName() {
-        return this.user.getFirstName();
-    }
-    
-    public void setFirstName(String firstName) {
-        this.user.setFirstName(firstName);
-    }
-    
-    public Set<AdminController.UserCreationErrors> getErrors() {
-        return errors;
-    }
-    
-    public void setErrors(Set<AdminController.UserCreationErrors> errors) {
-        this.errors = errors;
-    }
-    
-    public String getLastName() {
-        return this.user.getLastName();
-    }
-    
-    public void setLastName(String lastName) {
-        this.user.setLastName(lastName);
-    }
-    
-    public String getEmail() {
-        return this.user.getEmail();
-    }
-    
-    public void setEmail(String email) {
-        this.user.setEmail(email);
     }
     
     public boolean isAdmin() {
@@ -111,6 +62,6 @@ public class UserBean implements Serializable {
     }
     
     public void doCreateUser() {
-        errors = this.adminController.createNewUser(this.user);
+        this.adminController.createNewUser(this.user);
     }
 }

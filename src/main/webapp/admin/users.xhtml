@@ -23,13 +23,13 @@
                       hideEffect="fade" resizable="false">
                 <h:panelGrid columns="3">
                     <p:outputLabel for="createUsername" value="Username: "/>
-                    <p:inputText id="createUsername" value="#{userBean.username}" required="true">
+                    <p:inputText id="createUsername" value="#{userBean.user.username}" required="true">
                         <f:validateLength minimum="3" maximum="100"/>
                         <p:ajax update="msgcreateUsername" event="blur"/>
                     </p:inputText>
                     <p:message for="createUsername" id="msgcreateUsername"/>
                     <p:outputLabel for="createPassword" value="Password: "/>
-                    <p:password id="createPassword" value="#{userBean.password}" required="true">
+                    <p:password id="createPassword" value="#{userBean.user.password}" required="true">
                         <f:validateLength minimum="8"/>
                         <p:ajax update="msgcreatePassword" event="blur"/>
                     </p:password>
@@ -38,13 +38,13 @@
                 <p:separator/>
                 <h:panelGrid columns="3">
                     <p:outputLabel for="createFirstName" value="First Name: "/>
-                    <p:inputText id="createFirstName" value="#{userBean.firstName}"/>
+                    <p:inputText id="createFirstName" value="#{userBean.user.firstName}"/>
                     <p/>
                     <p:outputLabel for="createLastName" value="Last Name: "/>
-                    <p:inputText id="createLastName" value="#{userBean.lastName}"/>
+                    <p:inputText id="createLastName" value="#{userBean.user.lastName}"/>
                     <p />
                     <p:outputLabel for="createEmail" value="E-Mail: "/>
-                    <p:inputText id="createEmail" value="#{userBean.email}" required="true">
+                    <p:inputText id="createEmail" value="#{userBean.user.email}" required="true">
                         <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
                         <p:ajax update="msgcreateEmail" event="blur"/>
                     </p:inputText>
