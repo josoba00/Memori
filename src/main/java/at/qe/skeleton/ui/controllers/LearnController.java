@@ -86,12 +86,12 @@ public class LearnController implements Serializable {
                 return null;
             }
             this.currentlyDisplayedCard = neverLearnedCardsQueue.poll();
-            this.isFrontSide = false;
+            this.isFrontSide = this.currentlyDisplayedCard.isFlipped();
             this.doGetOtherSideOfCard();
             return this.currentlyDisplayedCard;
         }
         this.currentlyDisplayedCard = cardsQueue.poll();
-        this.isFrontSide = false;
+        this.isFrontSide = this.currentlyDisplayedCard.isFlipped();
         this.doGetOtherSideOfCard();
         return currentlyDisplayedCard;
     }
