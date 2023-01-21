@@ -60,6 +60,9 @@ public class DeckService {
     }
 
     public List<Deck> loadDecksBySearch(String search){
+        if(sessionInfoBean.hasRole("ADMIN")){
+            return deckRepository.findByAdminSearch(search);
+        }
         return deckRepository.findBySearch(search, sessionInfoBean.getCurrentUserName());
     }
 
