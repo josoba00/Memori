@@ -56,15 +56,28 @@
                                          styleClass="rounded-button ui-button-secondary ui-button-flat"
                                          rendered="#{userBookmarkController.isBookmarked(deck)}"/>
                     </p:column>
-
+                    <p:column style="width: 96px" rendered="#{sessionInfoBean.hasRole('ADMIN')}">
+                        <p:commandButton action="#{adminController.lockDeck(deck)}" value="LOCK" update=":searchForm:searchTable" rendered="#{deck.status eq 'PUBLIC'}">
+                            <p:confirm header="Confirmation"
+                                       message="Are you sure that you want to lock this Deck?"
+                                       icon="ui-icon-alert"/>
+                        </p:commandButton>
+                        <p:commandButton action="#{adminController.unlockDeck(deck)}" value="UNLOCK" update=":searchForm:searchTable" rendered="#{deck.status eq 'LOCKED'}">
+                            <p:confirm header="Confirmation"
+                                       message="Are you sure that you want to unlock this Deck?"
+                                       icon="ui-icon-alert"/>
+                        </p:commandButton>
+                    </p:column>
                     <p:rowExpansion>
                         <div style="padding:12px; text-align: justify">
                             <h:outputText value="#{deck.description}"/>
                         </div>
-
-
                     </p:rowExpansion>
                 </p:dataTable>
+                <p:confirmDialog global="true" width="300">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times"/>
+                </p:confirmDialog>
             </h:form>
         </div>
 
