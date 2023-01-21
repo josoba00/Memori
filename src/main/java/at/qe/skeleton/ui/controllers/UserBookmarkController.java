@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.List;
 
@@ -26,8 +27,11 @@ public class UserBookmarkController implements Serializable {
     private transient DeckService deckService;
     @Autowired
     private  SessionInfoBean sessionInfoBean;
-    private User getCurrentUser(){
-        return sessionInfoBean.getCurrentUser();
+    private User currentUser;
+
+    @PostConstruct
+    public void init(){
+        this.currentUser=userService.loadUser(sessionInfoBean.getCurrentUserName());
     }
 
     /**
@@ -35,7 +39,7 @@ public class UserBookmarkController implements Serializable {
      * @return
      */
     public List<Deck> doGetBookmarks(){
-        return getCurrentUser().getBookmarks().stream().toList();
+        return currentUser.getBookmarks().stream().toList();
     }
 
     /**
@@ -43,8 +47,8 @@ public class UserBookmarkController implements Serializable {
      * @param bookmark
      */
     public void doAddBookmark(Deck bookmark){
-        userService.addNewBookmark(getCurrentUser(), bookmark);
-        userService.saveUser(getCurrentUser());
+        userService.addNewBookmark(currentUser, bookmark);
+        this.currentUser=userService.saveUser(currentUser);
     }
 
 
@@ -53,11 +57,11 @@ public class UserBookmarkController implements Serializable {
      * @param bookmark
      */
     public void doDeleteBookmark(Deck bookmark){
-        userService.deleteBookmark(getCurrentUser(), bookmark);
-        userService.saveUser(getCurrentUser());
+        userService.deleteBookmark(currentUser, bookmark);
+        this.currentUser=userService.saveUser(currentUser);
     }
     public boolean isBookmarked(Deck deck){
-        return userService.isBookmarked(getCurrentUser(), deck);
+        return userService.isBookmarked(currentUser, deck);
     }
 
 }
