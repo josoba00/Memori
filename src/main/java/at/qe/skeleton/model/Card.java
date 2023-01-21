@@ -39,6 +39,8 @@ public class Card implements CardInterface, Persistable<Long>, Serializable, Com
     )
     private Set<UserCardInfo> cardInfos;
     
+    private boolean isFlipped;
+    
     public Card() {
         this.creationDate = new Date();
     }
@@ -93,6 +95,14 @@ public class Card implements CardInterface, Persistable<Long>, Serializable, Com
     
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+    
+    public boolean isFlipped() {
+        return isFlipped;
+    }
+    
+    public void setFlipped(boolean flipped) {
+        isFlipped = flipped;
     }
     
     @Override
