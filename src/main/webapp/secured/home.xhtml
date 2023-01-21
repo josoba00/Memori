@@ -158,14 +158,14 @@
         <p:dialog header="#{learnController.learningDeck.title}" id="learnViewDialog" widgetVar="learnViewDialog"
                   modal="true" showEffect="fade"
                   hideEffect="fade" resizable="false">
-            <p:outputPanel id="cardData">
-                <p:panelGrid columns="1">
+            <p:outputPanel style="align-items: center" id="cardData">
+                <p:panelGrid style="margin: auto !important;" columns="1">
                     <p>
                         cards left: #{learnController.cardsToLearnAmount}<br/>
                         new cards: #{learnController.neverLearnedCardsAmount}
                     </p>
                 </p:panelGrid>
-                <p:panelGrid columns="1">
+                <p:panelGrid style="margin: auto !important;" columns="1">
                     <p>#{learnController.currentlyDisplayedText}</p>
                 </p:panelGrid>
                 <p:commandButton value="Flip" styleClass="rounded-button"

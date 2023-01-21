@@ -192,3 +192,11 @@ body .ui-paginator .ui-paginator-next, body .ui-paginator .ui-paginator-last{
     margin: 0.1%;
 }
 
+
+/* ----------- Lear cards popup ----------- */
+.ui-panelgrid .ui-panelgrid-cell{
+    background-color: var(--customUi-backgroundColor1) !important;
+    color: var(--customUi-fontColorWhite) !important;
+    border: none !important;
+    border-radius: 5px !important;
+}
