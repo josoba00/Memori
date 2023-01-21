@@ -92,13 +92,14 @@ public class LearnService {
         if(userCardInfo == null){
             userCardInfo = generateNewUserCardInfo(card, currentUser);
         }
+        Set<UserCardInfo> infos = currentUser.getCardInfos();
+        infos.remove(userCardInfo);
         userCardInfo.setNumberOfRepetitions(userCardInfo.getNumberOfRepetitions()+1);
         userCardInfo.setLearnInterval(findNewLearnInterval(userCardInfo, difficulty));
         userCardInfo.setRepetitionDate(calculateNewDate(userCardInfo.getLearnInterval()));
         if(difficulty > 2 && userCardInfo.getNumberOfRepetitions()>2){
             userCardInfo.setEfFactor(calculateNewEfFactor(userCardInfo.getEfFactor(), difficulty));
         }
-        Set<UserCardInfo> infos = currentUser.getCardInfos();
         infos.add(userCardInfo);
         currentUser.setCardInfos(infos);
         userService.saveUser(currentUser);
