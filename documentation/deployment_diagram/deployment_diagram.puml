@@ -1,0 +1,18 @@
+@startuml
+skinparam linetype ortho
+node "Memori deployment" <<device>> as deploy{
+    artifact "Memori" <<source>>
+}
+
+node "Webserver" <<device>> as server{
+    artifact "Memori-core" <<binary>>
+}
+
+node "Memori user computer" <<device>>  as user{
+    component browser
+}
+server <-l- deploy : "         http upload"
+deploy ---[hidden] user
+user -l-> server : "internet / https"
+
+@enduml

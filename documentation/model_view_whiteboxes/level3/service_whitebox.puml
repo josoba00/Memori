@@ -1,0 +1,37 @@
+@startuml
+skinparam linetype ortho
+package "comp Memori::System::Services"{
+    class DeckService {
+        - deckRepository: DeckRepository
+        - sessionInfoBean: SessionInfoBean
+    }
+
+    class EmailSenderService {
+        - mailSender: JavaMailSender
+        - freeMarkerConfigurer: FreeMarkerConfigurer
+        - logger: Logger
+    }
+    interface MessageSenderService
+
+    class UserService {
+        - userRepository: UserRepository
+    }
+    class LearnService {
+            - userCardInfoRepository: UserCardInfoRepository
+        }
+}
+
+MessageSenderService <- DeckService
+MessageSenderService ^-- EmailSenderService
+
+Model <-- DeckService
+Model <-- UserService
+Model <-- LearnService
+
+Repository <. DeckService
+Repository <. UserService
+Repository <. LearnService
+
+Config <- EmailSenderService
+UserService -[hidden]- LearnService
+@enduml
