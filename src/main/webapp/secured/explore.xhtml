@@ -1,17 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
-                xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+                xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/templates/main.xhtml">
     <ui:define name="content">
         <head>
             <link rel="stylesheet" href="#{request.contextPath}/resources/css/headersAndMenuItems.css"/>
-                        <link rel="stylesheet" href="#{request.contextPath}/resources/css/background.css"/>
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/background.css"/>
         </head>
 
         <form action="explore.xhtml" method="get"
@@ -46,7 +44,10 @@
                     <p:column headerText="Cards" style="width: 64px">
                         <h:outputText value="#{deck.size()}"/>
                     </p:column>
-
+                    <p:column style="width: 130px">
+                        <p:button value="Details" outcome="/secured/deck_detail_view.xhtml?id=#{deck.id}" id="deckDetailButton"
+                                  style="width: 130px; justify-self: end"/>
+                    </p:column>
                     <p:column style="width: 64px;">
                         <p:commandButton action="#{userBookmarkController.doAddBookmark(deck)}" icon="pi pi-bookmark"
                                          styleClass="rounded-button ui-button-secondary ui-button-flat"
@@ -57,12 +58,14 @@
                                          rendered="#{userBookmarkController.isBookmarked(deck)}"/>
                     </p:column>
                     <p:column style="width: 96px" rendered="#{sessionInfoBean.hasRole('ADMIN')}">
-                        <p:commandButton action="#{adminController.lockDeck(deck)}" value="LOCK" update=":searchForm:searchTable" rendered="#{deck.status eq 'PUBLIC'}">
+                        <p:commandButton action="#{adminController.lockDeck(deck)}" value="LOCK"
+                                         update=":searchForm:searchTable" rendered="#{deck.status eq 'PUBLIC'}">
                             <p:confirm header="Confirmation"
                                        message="Are you sure that you want to lock this Deck?"
                                        icon="ui-icon-alert"/>
                         </p:commandButton>
-                        <p:commandButton action="#{adminController.unlockDeck(deck)}" value="UNLOCK" update=":searchForm:searchTable" rendered="#{deck.status eq 'LOCKED'}">
+                        <p:commandButton action="#{adminController.unlockDeck(deck)}" value="UNLOCK"
+                                         update=":searchForm:searchTable" rendered="#{deck.status eq 'LOCKED'}">
                             <p:confirm header="Confirmation"
                                        message="Are you sure that you want to unlock this Deck?"
                                        icon="ui-icon-alert"/>

@@ -15,7 +15,6 @@
             <link rel="stylesheet" href="#{request.contextPath}/resources/css/background.css"/>
             <link rel="stylesheet" href="#{request.contextPath}/resources/css/inputFields.css"/>        
             <link rel="stylesheet" href="#{request.contextPath}/resources/css/divElements.css"/>
-            <!--<link rel="stylesheet" href="#{request.contextPath}/resources/css/headers.css"/>-->
         </head>
         <h:form id="menu-form">
             <p:tabMenu activeIndex="#{param.i}">
@@ -132,6 +131,10 @@
                         <div style="height: 80px; overflow-y: scroll; padding-right: 12px">
                             <h:outputText style="text-align: justify;" value="#{deck.description}"/>
                         </div>
+                    </p:column>
+                    <p:column style="width: 130px">
+                        <p:button value="Details" outcome="/secured/deck_detail_view.xhtml?id=#{deck.id}" id="deckDetailButton"
+                                  style="width: 130px; justify-self: end"/>
                     </p:column>
                     <p:column style="width: 128px">
                         <p:commandButton value="Learn" update="learnViewDialog"
