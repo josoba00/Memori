@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/main.xhtml">
+    <ui:define name="content">
+        <head>
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/headersAndMenuItems.css"/>
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/background.css"/>
+
+        </head>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{deckDetailController.loadDeck(param.id)}"/>
+        </f:metadata>
+
+        <h:form id="deckDetailForm">
+            <div style="display: grid; margin-top: 50px; width: max(min(400px,100%), 50%); height: 50px; grid-template-columns:  100px 1fr; gap: 20px;">
+                <p:outputLabel style="line-height: 50px; font-size: 20px;">Title: </p:outputLabel>
+                <p:inputText id="title" value="#{deckDetailController.deck.title}" disabled="true"
+                             style="height: 100%;"/>
+            </div>
+            <div style="display: grid; margin-top: 20px; width: max(min(400px,100%), 50%); grid-template-columns:  100px 1fr; gap: 20px;">
+                <p:outputLabel style="line-height: 50px; font-size: 20px;">Description:</p:outputLabel>
+                <p:inputTextarea rows="6" cols="33" value="#{deckDetailController.deck.description}" disabled="true"/>
+            </div>
+
+            <p:dataTable id="cardTable" widgetVar="cardTable" var="card" value="#{deckDetailController.cards}"
+                         emptyMessage="Deck is empty"
+                         sortBy="#{card.frontSideContent}" style="margin-top: 25px">
+
+                <p:column headerText="Front">
+                    <p:inputTextarea rows="1" id="frontSideInput" value="#{card.frontSideContent}" disabled="true"
+                                     style="width:95%"/>
+                </p:column>
+                <p:column headerText="Back">
+
+                    <p:inputTextarea rows="1" id="backSideInput" value="#{card.backSideContent}" disabled="true" style="width: 95%"/>
+
+                </p:column>
+                <p:column headerText="Flip" style="width:2rem">
+                    <p:selectBooleanCheckbox id="isFlipped" value="#{card.flipped}" disabled="true"/>
+                </p:column>
+            </p:dataTable>
+            <div style="display: flex; justify-content: center; margin: 20px 0">
+            </div>
+        </h:form>
+
+
+    </ui:define>
+
+
+</ui:composition>
