@@ -1,0 +1,87 @@
+@startuml
+title "Create new Deck"
+actor user
+participant UserBrowser as userB
+participant DeckDetailController as deckDC
+participant "Deck:deck" as deck
+participant "Card: card" as card
+participant UserService as userS
+participant SessionInfoBean as sIBean
+participant DeckService as deckS
+participant DeckRepository as deckR
+
+
+
+user -> userB : clicks "Create Deck" \nbutton
+userB -> deckDC : loadDeck()
+activate deckDC
+create deck
+deckDC -> deck : new Deck()
+deckDC -> userS: loadUser()
+activate userS
+userS -> sIBean : getCurrentUser
+activate sIBean
+return user
+return user
+deckDC -> deck : setCreator()
+activate deck
+deckDC -> deck : setStatus()
+deactivate deck
+return "display empty deck"
+
+user -> userB : fills form
+userB -> deckDC: "pass values"
+activate deckDC
+
+deckDC -> deck : setTitle()
+activate deck
+deckDC-> deck : setDescription()
+deactivate deck
+deactivate deckDC
+loop
+user -> userB : clicks "Add Card" \nbutton
+userB -> deckDC: addCard()
+activate deckDC
+create card
+
+deckDC -> card : new Card()
+
+deckDC -> card: setContainer()
+activate card
+deactivate card
+deactivate deckDC
+
+user -> userB: fills form
+userB -> deckDC: "pass values"
+activate deckDC
+deckDC -> card : setFrontSideContent()
+activate card
+deckDC -> card : setBackSideContent()
+deckDC -> card: setIsFlipped()
+deactivate deckDC
+deactivate card
+end
+alt "Save deck"
+user -> userB : clicks "Save" \nbutton
+userB -> deckDC : doSaveDeck()
+activate deckDC
+deckDC -> deck : setContent()
+activate deck
+deactivate deck
+deckDC -> deckS : saveDeck()
+activate deckS
+deckS -> deck : setCreationDate()
+activate deck
+deactivate deck
+deckS -> deckR : save()
+activate deckR
+deactivate deckR
+deactivate deckS
+deactivate deckDC
+userB -> user: home view
+else "Cancel"
+user -> userB : clicks "Cancel" \nbutton
+userB -> user : home view
+end
+
+@enduml

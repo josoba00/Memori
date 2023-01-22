@@ -1,0 +1,23 @@
+@startuml
+skinparam linetype ortho
+package "comp Memori::System"{
+        component Controller
+        component Services
+        component Model
+        component Beans
+        component Configs
+}
+
+"Web-resources" <.. Controller
+Services ..> "Database"
+
+Controller --> Services
+Controller --> Model
+Model <- Services
+Controller --> Beans
+Services <- Beans
+Services --> Configs
+
+
+
+@enduml

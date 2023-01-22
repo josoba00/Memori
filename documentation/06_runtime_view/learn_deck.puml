@@ -1,0 +1,67 @@
+@startuml
+autonumber
+title "User learns a Deck"
+actor user
+participant UserBrowser as userB
+participant LearnController as learnC
+participant LearnService as learnS
+participant UserCardInfoRepository as UCIRepo
+participant UserService as userS
+user -> userB : clicks learn button
+userB -> learnC : doInitializeQueues()
+activate learnC
+learnC -> learnS : findCardsToLearn()
+activate learnS
+loop all cards in Deck
+learnS -> UCIRepo : findFirstByUserAndCard()
+activate UCIRepo
+return userCardInfo
+end
+return Set<Card>
+learnC -> learnS : findNeverLearnedCard()
+activate learnS
+loop call card in Deck
+learnS -> UCIRepo : findFirstByUserAndCard()
+activate UCIRepo
+return userCardInfo
+end
+return Set<Card>
+learnC -> learnC : doGetNextCard
+return card.frontSide
+
+loop has Cards to learn
+user -> userB : clicks flip button
+userB -> learnC : doGetOtherSideOfCard()
+activate learnC
+return card.backSide
+user -> userB : clicks difficulty button
+userB -> learnC : setDifficulty()
+activate learnC
+deactivate learnC
+user -> userB : clicks next button
+userB -> learnC : doNext()
+activate learnC
+learnC -> learnC : doAddCardBackQueue()
+learnC -> learnC : updateRepository()
+learnC -> learnS : updateUserCardInfo()
+activate learnS
+
+learnS -> UCIRepo : findFirstByUserAndCard()
+activate UCIRepo
+return userCardInfo
+opt no UserCardInfo found
+    learnS -> learnS : generateNewUserCardInfo()
+end
+learnS -> learnS : findNewLearnInterval()
+learnS -> learnS : calculateNewDate()
+learnS -> learnS : calculateNewEfFactor()
+learnS -> userS : saveUser()
+activate userS
+deactivate userS
+deactivate learnS
+learnC -> learnC : doGetNextCard()
+return next_card.frontSide
+end
+learnC --> userB : no cards left. well done!
+user --> userB : exit learn view
+@enduml
