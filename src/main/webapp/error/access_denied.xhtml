@@ -6,7 +6,10 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/templates/main.xhtml">
     <ui:define name ="content">
-
+        <head>
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/headersAndMenuItems.css"/>
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/background.css"/>
+        </head>
         <h:form>
             <p:panel header="Access Denied">
                 You do not have access to the requested resource.

@@ -3,6 +3,7 @@ package at.qe.skeleton.services;
 import at.qe.skeleton.model.Card;
 import at.qe.skeleton.model.User;
 import at.qe.skeleton.model.UserCardInfo;
+import at.qe.skeleton.model.UserCardInfoID;
 import at.qe.skeleton.repositories.UserCardInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -16,7 +17,9 @@ import java.util.*;
 public class LearnService {
 
     @Autowired
-    private transient UserCardInfoRepository userCardInfoRepository;
+    private UserCardInfoRepository userCardInfoRepository;
+    @Autowired
+    private UserService userService;
 
 
     /**
@@ -25,7 +28,7 @@ public class LearnService {
      * @param cardSet
      * @return found cards
      */
-    public Set<Card> findCardsToLearn(Set<Card> cardSet, User currentUser){
+    public Set<Card> findCardsToLearn(List<Card> cardSet, User currentUser){
         Set<Card> storage = new HashSet<>();
         for(Card card: cardSet){
             UserCardInfo userCardInfo = userCardInfoRepository.findFirstByUserAndCard(currentUser, card);
@@ -42,7 +45,7 @@ public class LearnService {
      * @param currentUser
      * @return
      */
-    public Set<Card> findNeverLearnedCards(Set<Card> cardSet, User currentUser){
+    public Set<Card> findNeverLearnedCards(List<Card> cardSet, User currentUser){
         Set<Card> storage = new HashSet<>();
         for(Card card: cardSet){
             UserCardInfo userCardInfo = userCardInfoRepository.findFirstByUserAndCard(currentUser, card);
@@ -89,12 +92,17 @@ public class LearnService {
         if(userCardInfo == null){
             userCardInfo = generateNewUserCardInfo(card, currentUser);
         }
+        Set<UserCardInfo> infos = currentUser.getCardInfos();
+        infos.remove(userCardInfo);
         userCardInfo.setNumberOfRepetitions(userCardInfo.getNumberOfRepetitions()+1);
         userCardInfo.setLearnInterval(findNewLearnInterval(userCardInfo, difficulty));
         userCardInfo.setRepetitionDate(calculateNewDate(userCardInfo.getLearnInterval()));
         if(difficulty > 2 && userCardInfo.getNumberOfRepetitions()>2){
             userCardInfo.setEfFactor(calculateNewEfFactor(userCardInfo.getEfFactor(), difficulty));
         }
+        infos.add(userCardInfo);
+        currentUser.setCardInfos(infos);
+        userService.saveUser(currentUser);
     }
 
     /**
@@ -120,12 +128,19 @@ public class LearnService {
 
     private UserCardInfo generateNewUserCardInfo(Card card, User currentUser){
         UserCardInfo userCardInfo = new UserCardInfo();
+        UserCardInfoID id = new UserCardInfoID();
+        id.setUsername(currentUser.getUsername());
+        id.setCardId(card.getId());
+        userCardInfo.setId(id);
         userCardInfo.setCard(card);
         userCardInfo.setUser(currentUser);
         userCardInfo.setLearnInterval(0);
         userCardInfo.setEfFactor(2.5f);
         userCardInfo.setNumberOfRepetitions(0);
-        userCardInfoRepository.save(userCardInfo);
+        Set<UserCardInfo>  infos = currentUser.getCardInfos();
+        infos.add(userCardInfo);
+        currentUser.setCardInfos(infos);
+        userService.saveUser(currentUser);
         return userCardInfo;
     }
 

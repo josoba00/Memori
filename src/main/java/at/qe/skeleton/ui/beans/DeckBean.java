@@ -1,6 +1,7 @@
 package at.qe.skeleton.ui.beans;
 
 import at.qe.skeleton.model.Deck;
+import at.qe.skeleton.model.User;
 import at.qe.skeleton.services.DeckService;
 import at.qe.skeleton.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class DeckBean implements Serializable {
     @Autowired
     private transient DeckService deckService;
     @Autowired
-    private  transient UserService userService;
+    private transient UserService userService;
 
     private List<Deck> personalDecks;
     private List <Deck> savedDecks;
@@ -40,10 +41,8 @@ public class DeckBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        this.personalDecks = new ArrayList<>(sessionInfoBean.getCurrentUser().getCreatedDecks());
-        this.savedDecks = new ArrayList<>(sessionInfoBean.getCurrentUser().getBookmarks());
-        savedDecks.isEmpty(); //TODO: ??
-
+        this.personalDecks = new ArrayList<>(userService.loadUser(sessionInfoBean.getCurrentUserName()).getCreatedDecks());
+        this.savedDecks = new ArrayList<>(userService.loadUser(sessionInfoBean.getCurrentUserName()).getBookmarks());
     }
 
     public boolean globalFilterFunction(Object value, Object filter, Locale locale) {
@@ -94,8 +93,9 @@ public class DeckBean implements Serializable {
     }
     public void deleteBookmark(Deck deck){
         this.savedDecks.remove(deck);
-        this.userService.deleteBookmark(sessionInfoBean.getCurrentUser(), deck);
-        this.userService.saveUser(sessionInfoBean.getCurrentUser());
+        User currentUser = userService.loadUser(sessionInfoBean.getCurrentUserName());
+        this.userService.deleteBookmark(currentUser, deck);
+        this.userService.saveUser(currentUser);
     }
     public void makeDeckPublic(Deck deck){
         this.deckService.setDeckStatusPublic(deck);

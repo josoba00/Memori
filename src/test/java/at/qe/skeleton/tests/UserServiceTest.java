@@ -3,6 +3,7 @@ package at.qe.skeleton.tests;
 import at.qe.skeleton.model.Deck;
 import at.qe.skeleton.model.User;
 import at.qe.skeleton.model.UserRole;
+import at.qe.skeleton.repositories.DeckRepository;
 import at.qe.skeleton.services.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -26,15 +30,17 @@ import java.util.Set;
  */
 @SpringBootTest
 @WebAppConfiguration
-public class UserServiceTest {
+class UserServiceTest {
 
     @Autowired
     UserService userService;
+    @Autowired
+    DeckRepository deckRepository;
 
     @Test
     @DirtiesContext
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void testDatainitialization() {
+     void testDatainitialization() {
         Assertions.assertEquals(4, userService.getAllUsers().size(), "Insufficient amount of users initialized for test data source");
         for (User user : userService.getAllUsers()) {
             if ("admin".equals(user.getUsername())) {
@@ -57,7 +63,7 @@ public class UserServiceTest {
     @DirtiesContext
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void testDeleteUser() {
+     void testDeleteUser() {
         String username = "user1";
         User adminUser = userService.loadUser("admin");
         Assertions.assertNotNull(adminUser, "Admin user could not be loaded from test data source");
@@ -78,7 +84,7 @@ public class UserServiceTest {
     @DirtiesContext
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void testUpdateUser() {
+     void testUpdateUser() {
         String username = "user1";
         User adminUser = userService.loadUser("admin");
         Assertions.assertNotNull(adminUser, "Admin user could not be loaded from test data source");
@@ -96,7 +102,7 @@ public class UserServiceTest {
     @DirtiesContext
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void testCreateUser() {
+     void testCreateUser() {
         User adminUser = userService.loadUser("admin");
         Assertions.assertNotNull(adminUser, "Admin user could not be loaded from test data source");
 
@@ -130,7 +136,7 @@ public class UserServiceTest {
     @Test
     @DirtiesContext
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void testExceptionForEmptyUsername() {
+     void testExceptionForEmptyUsername() {
         Assertions.assertThrows(org.springframework.orm.jpa.JpaSystemException.class, () -> {
             User adminUser = userService.loadUser("admin");
             Assertions.assertNotNull(adminUser, "Admin user could not be loaded from test data source");
@@ -141,7 +147,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUnauthenticateddLoadUsers() {
+     void testUnauthenticateddLoadUsers() {
         Assertions.assertThrows(org.springframework.security.authentication.AuthenticationCredentialsNotFoundException.class, () -> {
             for (User user : userService.getAllUsers()) {
                 Assertions.fail("Call to userService.getAllUsers should not work without proper authorization");
@@ -151,7 +157,7 @@ public class UserServiceTest {
 
     @Test
     @WithMockUser(username = "user", authorities = {"LEARNER"})
-    public void testUnauthorizedLoadUsers() {
+     void testUnauthorizedLoadUsers() {
         Assertions.assertThrows(org.springframework.security.access.AccessDeniedException.class, () -> {
             for (User user : userService.getAllUsers()) {
                 Assertions.fail("Call to userService.getAllUsers should not work without proper authorization");
@@ -161,7 +167,7 @@ public class UserServiceTest {
 
     @Test
     @WithMockUser(username = "user1", authorities = {"LEARNER"})
-    public void testUnauthorizedLoadUser() {
+     void testUnauthorizedLoadUser() {
         Assertions.assertThrows(org.springframework.security.access.AccessDeniedException.class, () -> {
             User user = userService.loadUser("admin");
             Assertions.fail("Call to userService.loadUser should not work without proper authorization for other users than the authenticated one");
@@ -170,7 +176,7 @@ public class UserServiceTest {
 
     @Test
     @WithMockUser(username = "user1", authorities = {"LEARNER"})
-    public void testAuthorizedLoadUser() {
+     void testAuthorizedLoadUser() {
         String username = "user1";
         User user = userService.loadUser(username);
         Assertions.assertEquals(username, user.getUsername(), "Call to userService.loadUser returned wrong user");
@@ -179,7 +185,7 @@ public class UserServiceTest {
     @Test
     @DirtiesContext
     @WithMockUser(username = "user1", authorities = {"LEARNER"})
-    public void testSaveUser() {
+     void testSaveUser() {
 
             String username = "user1";
             User user = userService.loadUser(username);
@@ -192,7 +198,7 @@ public class UserServiceTest {
 
     @Test
     @WithMockUser(username = "user1", authorities = {"LEARNER"})
-    public void testUnauthorizedDeleteUser() {
+     void testUnauthorizedDeleteUser() {
         Assertions.assertThrows(org.springframework.security.access.AccessDeniedException.class, () -> {
             User user = userService.loadUser("user1");
             Assertions.assertEquals("user1", user.getUsername(), "Call to userService.loadUser returned wrong user");
@@ -202,7 +208,7 @@ public class UserServiceTest {
 
     @Test
     @DirtiesContext
-    public void testAddingBookmark(){
+     void testAddingBookmark(){
         Deck testDeck = new Deck();
         testDeck.setId(55L);
 
@@ -219,7 +225,7 @@ public class UserServiceTest {
 
     @Test
     @DirtiesContext
-    public void testDeletingBookmark(){
+     void testDeletingBookmark(){
         Deck testDeck1 = new Deck();
         testDeck1.setId(55L);
 
@@ -235,5 +241,31 @@ public class UserServiceTest {
         bookmarkSet.remove(testDeck1);
         userService.deleteBookmark(testUser, testDeck1);
         Assertions.assertEquals(bookmarkSet, testUser.getBookmarks(), "Unable to remove Bookmark!");
+    }
+    
+    @Test
+    @DirtiesContext
+    @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    void User_addTwoBookmarks_bothBookmarksArePersisted() {
+        User admin = userService.loadUser("admin");
+        assertNotNull(admin, "there exists no user with username admin");
+        Deck deck2 = deckRepository.findById(2L);
+        assertNotNull(deck2, "there exists no deck with id 2");
+        Deck deck3 = deckRepository.findById(3L);
+        assertNotNull(deck3, "there exists no deck with id 3");
+        List<Deck> decksToBeAdded = List.of(deck2, deck3);
+        assertFalse(admin.getBookmarks().stream().anyMatch(decksToBeAdded::contains), "the test user already has one of the test decks bookmarked make sure to find a user where that is not the case");
+        
+       userService.addNewBookmark(admin, deck2);
+        
+        admin = userService.saveUser(admin);
+        
+        userService.addNewBookmark(admin, deck3);
+        userService.saveUser(admin);
+    
+        User finalAdmin = userService.loadUser("admin");
+        assertNotNull(admin, "there exists no user with username admin");
+        
+        assertTrue(finalAdmin.getBookmarks().containsAll(decksToBeAdded), "The user did not get both bookmarks in his collection of bookmarks");
     }
 }

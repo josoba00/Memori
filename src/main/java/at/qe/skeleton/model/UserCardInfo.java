@@ -32,7 +32,6 @@ public class UserCardInfo implements Persistable<UserCardInfoID>, Serializable {
     private Date creationDate;
     
     private Date repetitionDate;
-    private boolean isFlipped;
     private float efFactor;
     private int numberOfRepetitions;
 
@@ -68,15 +67,7 @@ public class UserCardInfo implements Persistable<UserCardInfoID>, Serializable {
         if (function == null) throw new NullPointerException();
         this.repetitionDate = function.apply(this);
     }
-    
-    public boolean isFlipped() {
-        return isFlipped;
-    }
-    
-    public void setFlipped(boolean flipped) {
-        isFlipped = flipped;
-    }
-    
+ 
     public float getEfFactor() {
         return efFactor;
     }

@@ -1,0 +1,28 @@
+@startuml
+top to bottom direction
+skinparam linetype ortho
+package "comp Memori::System::Bean" {
+    class UserBean {
+        - user: User
+        - errors: Set<>
+        - adminController: AdminController
+    }
+
+    class DeckBean {
+        - sessionInfoBean: SessionInfoBean
+        - deckService: DeckService
+        - userService: UserService
+    }
+
+    class SessionInfoBean {
+        - userService: UserService
+        - currentUser: User
+    }
+
+
+}
+DeckBean <-- UserBean
+Services <- SessionInfoBean
+Services <-- DeckBean
+
+@enduml

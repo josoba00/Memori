@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -104,7 +105,7 @@ public class UserService {
      * @return The {@link User} that is saved
      */
     public User createUser(String username, String password, String firstName, String lastName, String email, boolean enabled, Collection<UserRole> roles) {
-        return saveUser(new User(username, password, firstName, lastName, email, enabled, new TreeSet<>(roles)));
+        return saveUser(new User(username, new BCryptPasswordEncoder().encode(password), firstName, lastName, email, enabled, new TreeSet<>(roles)));
     }
     /**
      * Adds new Deck to currentUsers bookmarks.

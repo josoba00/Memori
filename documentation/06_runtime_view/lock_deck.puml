@@ -1,0 +1,47 @@
+@startuml
+autonumber
+actor Admin as admin
+participant UserBrowser as userB
+participant AdminController as adminC
+participant DeckService as deckS
+participant "Deck: deck" as deck
+participant MessageSenderService as message
+participant FreemarkerConfigurer as freeMark
+participant "external Email Provider"
+
+admin -> userB : clicks "Lock" button
+userB -> admin : confirmation alert
+admin -> userB : clicks "Yes"
+
+userB -> adminC : lockDeck()
+activate adminC
+
+adminC -> deckS : lockDeck()
+activate deckS
+deckS -> deck :setDeckStatus()
+
+deckS -> message : sendDeckLockMessage()
+activate message
+message -> deck: getCreator()
+activate deck
+return user
+
+message -> freeMark : getConfiguration()
+activate freeMark
+message -> freeMark : getTemplate()
+return email configuration \nand template
+
+
+message -> "external Email Provider" : send email to creator
+
+message -> deck : getBookmarkedBy()
+activate deck
+return Set<User>
+
+loop for all user with bookmark
+message -> "external Email Provider" : send email to user
+end
+deactivate message
+deactivate deckS
+return success
+@enduml

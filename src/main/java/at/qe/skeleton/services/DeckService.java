@@ -1,6 +1,7 @@
 package at.qe.skeleton.services;
 
 import at.qe.skeleton.model.*;
+import at.qe.skeleton.repositories.CardRepository;
 import at.qe.skeleton.repositories.DeckRepository;
 import at.qe.skeleton.ui.beans.SessionInfoBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Component;
 import javax.management.InstanceAlreadyExistsException;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Component
 @Scope("application")
@@ -21,6 +21,8 @@ public class DeckService {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private CardRepository cardRepository;
     @Autowired
     private SessionInfoBean sessionInfoBean;
 
@@ -39,15 +41,12 @@ public class DeckService {
 
     public void deleteDeck(Deck deck, User currentUser){
         if (currentUser.equals(deck.getCreator()) || currentUser.getRoles().contains(UserRole.ADMIN)){
-            for (User user : userService.getAllUsers()){
-                userService.deleteBookmark(user, deck);
-            }
             deckRepository.delete(deck);
         }
     }
 
     public Deck loadDeck(Long id){
-        return deckRepository.getReferenceById(id);
+        return deckRepository.findById(id);
     }
 
     public List<Deck> loadAllForeignPublicDecks(User currentUser){
@@ -61,6 +60,9 @@ public class DeckService {
     }
 
     public List<Deck> loadDecksBySearch(String search){
+        if(sessionInfoBean.hasRole("ADMIN")){
+            return deckRepository.findByAdminSearch(search);
+        }
         return deckRepository.findBySearch(search, sessionInfoBean.getCurrentUserName());
     }
 
@@ -72,7 +74,8 @@ public class DeckService {
         if (deck.getContent().contains(card)){
             throw new InstanceAlreadyExistsException();
         }
-        Set<Card> temp = deck.getContent();
+        card.setContainer(deck);
+        List<Card> temp = deck.getContent();
         temp.add(card);
         deck.setContent(temp);
     }

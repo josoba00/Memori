@@ -1,0 +1,30 @@
+@startuml
+skinparam linetype ortho
+node "Memori development" <<device>> as deploy{
+    component Memori
+    artifact "pom.xml"
+    artifact JDK
+    artifact Maven
+    artifact "spring-boot"
+}
+
+node "Webserver" <<device>> as server{
+    artifact "Memori-core" <<binary>>
+    component "h2-Database"
+}
+
+node "Memori user computer" <<device>>  as user{
+    component browser
+}
+
+Memori ..> "pom.xml"
+JDK - Maven
+JDK -- "spring-boot"
+Memori .> JDK
+
+"h2-Database" <- "Memori-core"
+"Memori-core" ....> Memori : "<<compiled form>>"
+
+"Memori-core" <. browser
+
+@enduml

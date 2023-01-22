@@ -1,0 +1,66 @@
+@startuml
+skinparam linetype ortho
+package "comp Memori::System::Controller"{
+    class AdminController {
+        - userService: UserService
+        - deckService: DeckService
+    }
+
+    class DeckDetailController {
+        - deckService: DeckService
+        - sessionInfoBean: SessionInfoBean
+        - userService: UserService
+        - deck: DeckService
+        - cards: Set<Cards>
+    }
+
+    class DeckListController {
+        - deckService: DeckService
+        - sessionInfoBean: SessionInfoBean
+    }
+
+    class LearnController {
+        - sessionInfoBean: SessionInfoBean
+        - learnService: LearnService
+        - cardsQueue: Queue<Card>
+        - neverLearnedCards: Queue<Card>
+        - difficulty: int
+    }
+    class UserBookmarkController {
+        - userService: UserService
+        - sessionInfoBean: SessionInfoBean
+    }
+
+    class UserDetailController {
+        - userService: UserService
+        - adminController: AdminController
+        - user: User
+    }
+    class UserListController {
+        - userService: UserService
+    }
+}
+
+UserDetailController -> AdminController
+Beans <.. LearnController
+Beans <.. UserDetailController
+Beans <.. DeckDetailController
+Beans <.. DeckListController
+Beans <.. UserBookmarkController
+
+Services <- AdminController
+Services <- DeckDetailController
+Services <- DeckListController
+Services <- LearnController
+Services <- UserBookmarkController
+Services <- UserDetailController
+Services <- UserListController
+
+UserListController --[hidden]> UserDetailController
+LearnController --[hidden]> UserBookmarkController
+DeckDetailController --[hidden] AdminController
+DeckListController --[hidden] UserListController
+
+
+
+@enduml

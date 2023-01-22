@@ -77,6 +77,7 @@ public class AdminController {
             return LockUnlockDeckErrors.DECK_NOT_PUBLIC;
         }
         deckService.lockDeck(deck);
+        deckService.saveDeck(deck);
         return LockUnlockDeckErrors.SUCCESS;
     }
 

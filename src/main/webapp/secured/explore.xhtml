@@ -2,18 +2,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
-                xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+                xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/templates/main.xhtml">
     <ui:define name="content">
+        <head>
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/headersAndMenuItems.css"/>
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/background.css"/>
+        </head>
 
         <form action="explore.xhtml" method="get"
               style="margin: 50px auto auto; width: max(min(400px,100%), 50%);height: 60px; display: grid; grid-template-columns: 3fr 1fr">
             <input class="text" type="text" name="search" placeholder="Search for Decks" value="#{param.search}"
-                   style="margin: 0;padding-left: 12px; height: 100%; width: 100%; font-size: 30px; border-radius: 50px 0 0 50px; border: 2px solid #D0C8D0"/>
+                   style="margin: 0;padding-left: 12px; height: 100%; width: 100%; font-size: 30px; border-radius: 50px 0 0 50px; border: 2px solid #4F67E3"/>
             <input class="submit" type="submit" value="GO"
                    style="margin: 0;height: 100%; width: min(150px,100%); float: right; font-size: 30px; border-radius: 0 50px 50px 0; border: 0; background: #4F67E3; color: #FFFFFF; cursor: pointer; -webkit-appearance: none"/>
         </form>
@@ -42,7 +44,10 @@
                     <p:column headerText="Cards" style="width: 64px">
                         <h:outputText value="#{deck.size()}"/>
                     </p:column>
-
+                    <p:column style="width: 130px">
+                        <p:button value="Details" outcome="/secured/deck_detail_view.xhtml?id=#{deck.id}" id="deckDetailButton"
+                                  style="width: 130px; justify-self: end"/>
+                    </p:column>
                     <p:column style="width: 64px;">
                         <p:commandButton action="#{userBookmarkController.doAddBookmark(deck)}" icon="pi pi-bookmark"
                                          styleClass="rounded-button ui-button-secondary ui-button-flat"
@@ -52,15 +57,30 @@
                                          styleClass="rounded-button ui-button-secondary ui-button-flat"
                                          rendered="#{userBookmarkController.isBookmarked(deck)}"/>
                     </p:column>
-
+                    <p:column style="width: 96px" rendered="#{sessionInfoBean.hasRole('ADMIN')}">
+                        <p:commandButton action="#{adminController.lockDeck(deck)}" value="LOCK"
+                                         update=":searchForm:searchTable" rendered="#{deck.status eq 'PUBLIC'}">
+                            <p:confirm header="Confirmation"
+                                       message="Are you sure that you want to lock this Deck?"
+                                       icon="ui-icon-alert"/>
+                        </p:commandButton>
+                        <p:commandButton action="#{adminController.unlockDeck(deck)}" value="UNLOCK"
+                                         update=":searchForm:searchTable" rendered="#{deck.status eq 'LOCKED'}">
+                            <p:confirm header="Confirmation"
+                                       message="Are you sure that you want to unlock this Deck?"
+                                       icon="ui-icon-alert"/>
+                        </p:commandButton>
+                    </p:column>
                     <p:rowExpansion>
                         <div style="padding:12px; text-align: justify">
                             <h:outputText value="#{deck.description}"/>
                         </div>
-
-
                     </p:rowExpansion>
                 </p:dataTable>
+                <p:confirmDialog global="true" width="300">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times"/>
+                </p:confirmDialog>
             </h:form>
         </div>
 

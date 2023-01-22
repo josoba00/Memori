@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 @Controller
 @Scope("view")
@@ -19,7 +20,12 @@ public class DeckListController implements Serializable {
     @Autowired
     private SessionInfoBean sessionInfoBean;
 
+    private List<Deck> deckList;
+
     public Collection<Deck> searchDecks(String search){
-        return deckService.loadDecksBySearch(search);
+        if(this.deckList==null){
+            this.deckList=deckService.loadDecksBySearch(search);
+        }
+        return this.deckList;
     }
 }

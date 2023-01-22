@@ -1,0 +1,12 @@
+.ui-custom-input-field-name{
+    color: white;
+}
+
+.ui-custom-input-field-name-margin{
+    margin: 5% 0 0 0;
+}
+
+.ui-custom-input-field-dark-grey{
+    background-color: #383838 !important;
+    color: #FFFFFF !important;
+}
