@@ -3,6 +3,7 @@ package at.qe.skeleton.ui.beans;
 import at.qe.skeleton.model.Deck;
 import at.qe.skeleton.model.User;
 import at.qe.skeleton.services.DeckService;
+import at.qe.skeleton.services.LearnService;
 import at.qe.skeleton.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,8 @@ public class DeckBean implements Serializable {
     private transient DeckService deckService;
     @Autowired
     private transient UserService userService;
+    @Autowired
+    private transient LearnService learnService;
 
     private List<Deck> personalDecks;
     private List <Deck> savedDecks;
@@ -104,5 +107,11 @@ public class DeckBean implements Serializable {
     public void makeDeckPrivate(Deck deck){
         this.deckService.setDeckStatusPrivate(deck);
         this.deckService.saveDeck(deck);
+    }
+    public int nNewCards(Deck deck){
+        return learnService.findNeverLearnedCards(deck.getContent(),userService.loadUser(sessionInfoBean.getCurrentUserName())).size();
+    }
+    public int nCardsToLearn(Deck deck){
+        return learnService.findCardsToLearn(deck.getContent(),userService.loadUser(sessionInfoBean.getCurrentUserName())).size();
     }
 }
