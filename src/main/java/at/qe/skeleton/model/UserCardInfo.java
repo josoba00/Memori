@@ -12,7 +12,13 @@ import java.util.function.Function;
 @Entity
 @Table(name = "user_card_info")
 public class UserCardInfo implements Persistable<UserCardInfoID>, Serializable {
-    
+
+    public UserCardInfo(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+    public UserCardInfo(){
+    }
+
     @EmbeddedId
     private UserCardInfoID id;
     
@@ -132,7 +138,7 @@ public class UserCardInfo implements Persistable<UserCardInfoID>, Serializable {
         }
         return this.getNotNullableId().equals(other.getNotNullableId());
     }
-    
+
     @Override
     public String toString() {
         return "at.qe.skeleton.model.UserCardInfo[ id = " + getNotNullableId().toString() + "]";
