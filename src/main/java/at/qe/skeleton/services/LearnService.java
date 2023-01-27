@@ -127,7 +127,7 @@ public class LearnService {
     }
 
     private UserCardInfo generateNewUserCardInfo(Card card, User currentUser){
-        UserCardInfo userCardInfo = new UserCardInfo();
+        UserCardInfo userCardInfo = new UserCardInfo(new Date());
         UserCardInfoID id = new UserCardInfoID();
         id.setUsername(currentUser.getUsername());
         id.setCardId(card.getId());
