@@ -61,24 +61,6 @@ public class LearnControllerTest {
         assertEquals(LearnController.InitialisationError.NO_CARDS_TO_LEARN,learnController.doInitializeQueues(testDeck));
     }
     
-    @Disabled
-    @Test
-    void initializeQueuesNeverLearnedEmptyTest(){
-        when(mockLearnService.findNeverLearnedCards(testDeck.getContent(), testUser)).thenReturn(Set.of());
-        when(mockLearnService.findCardsToLearn(testDeck.getContent(), testUser)).thenReturn(Set.of(testCard1, testCard2));
-
-        assertEquals(LearnController.InitialisationError.SUCCESS, learnController.doInitializeQueues(testDeck));
-    }
-    
-    @Disabled
-    @Test
-    void initializeQueuesCardToLearnEmptyTest(){
-        when(mockLearnService.findNeverLearnedCards(testDeck.getContent(), testUser)).thenReturn(Set.of(testCard1, testCard2));
-        when(mockLearnService.findCardsToLearn(testDeck.getContent(), testUser)).thenReturn(Set.of());
-
-        assertEquals(LearnController.InitialisationError.SUCCESS, learnController.doInitializeQueues(testDeck));
-    }
-
     @Test
     void getNextCardTest(){
         ReflectionTestUtils.setField(learnController, "cardsQueue", new LinkedList<>(Set.of(testCard1)));
