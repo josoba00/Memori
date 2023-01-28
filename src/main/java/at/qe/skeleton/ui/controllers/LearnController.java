@@ -134,6 +134,10 @@ public class LearnController implements Serializable {
         }
         updateRepository(card);
         if (this.difficulty < 4) {
+            if (this.cardsQueue.isEmpty()) {
+                neverLearnedCardsQueue.add(card);
+                return;
+            }
             cardsQueue.add(card);
         }
     }
