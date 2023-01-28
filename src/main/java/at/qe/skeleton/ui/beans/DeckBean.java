@@ -41,8 +41,8 @@ public class DeckBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        this.personalDecks = new ArrayList<>(userService.loadUser(sessionInfoBean.getCurrentUserName()).getCreatedDecks());
-        this.savedDecks = new ArrayList<>(userService.loadUser(sessionInfoBean.getCurrentUserName()).getBookmarks());
+        this.personalDecks = new ArrayList<>(deckService.getCreatedDecks(userService.loadUser(sessionInfoBean.getCurrentUserName())));
+        this.savedDecks = new ArrayList<>(deckService.getBookmarkedDecks(userService.loadUser(sessionInfoBean.getCurrentUserName())));
     }
 
     public boolean globalFilterFunction(Object value, Object filter, Locale locale) {

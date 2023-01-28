@@ -51,7 +51,7 @@
                     <p:column style="width: 64px;">
                         <p:commandButton action="#{userBookmarkController.doAddBookmark(deck)}" icon="pi pi-bookmark"
                                          styleClass="rounded-button ui-button-secondary ui-button-flat"
-                                         rendered="#{not userBookmarkController.isBookmarked(deck)}"
+                                         rendered="#{not (userBookmarkController.isBookmarked(deck) or deck.status eq 'LOCKED')}"
                                          update=":searchForm:searchTable"/>
                         <p:commandButton disabled="true" icon="pi pi-bookmark-fill"
                                          styleClass="rounded-button ui-button-secondary ui-button-flat"
