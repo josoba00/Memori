@@ -316,8 +316,8 @@ public class DeckBeanTest {
         when(mockedUserService.loadUser(any(String.class)))
                 .thenReturn(userService.loadUser(user.getUsername()));
         mockedDeckBean.init();
-        assertIterableEquals(user.getCreatedDecks(), mockedDeckBean.getPersonalDecks());
-        assertIterableEquals(user.getBookmarks(), mockedDeckBean.getSavedDecks());
+        assertIterableEquals(mockedDeckService.getCreatedDecks(user), mockedDeckBean.getPersonalDecks());
+        assertIterableEquals(mockedDeckService.getBookmarkedDecks(user), mockedDeckBean.getSavedDecks());
     }
 }
 
