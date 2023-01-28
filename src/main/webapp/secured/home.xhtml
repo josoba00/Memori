@@ -16,6 +16,7 @@
             <link rel="stylesheet" href="#{request.contextPath}/resources/css/inputFields.css"/>        
             <link rel="stylesheet" href="#{request.contextPath}/resources/css/divElements.css"/>
         </head>
+        <p:remoteCommand name="update" action="PF(':personalDeckForm:personalDeckTable').update()" actionListener="PF(':savedDeckForm:savedDeckTable').update()"/>
         <h:form id="menu-form">
             <p:tabMenu activeIndex="#{param.i}">
                 <p:menuitem value="Home" outcome="/secured/home.xhtml" icon="pi pi-fw pi-home">
@@ -58,6 +59,14 @@
                     <p:column headerText="Description">
                         <div style="height: 80px; overflow-y: scroll; padding-right: 12px">
                             <h:outputText style="text-align: justify;" value="#{deck.description}"/>
+                        </div>
+                    </p:column>
+                    <p:column style="width: 100px">
+                        <div>
+                            New Cards: #{deckBean.nNewCards(deck)}
+                        </div>
+                        <div>
+                            To Learn: #{deckBean.nCardsToLearn(deck)}
                         </div>
                     </p:column>
                     <p:column style="width: 96px; padding: 0">
@@ -132,6 +141,14 @@
                             <h:outputText style="text-align: justify;" value="#{deck.description}"/>
                         </div>
                     </p:column>
+                    <p:column style="width: 100px">
+                        <div>
+                        New Cards: #{deckBean.nNewCards(deck)}
+                        </div>
+                        <div>
+                        To Learn: #{deckBean.nCardsToLearn(deck)}
+                        </div>
+                    </p:column>
                     <p:column style="width: 130px">
                         <p:button value="Details" outcome="/secured/deck_detail_view.xhtml?id=#{deck.id}" id="deckDetailButton"
                                   style="width: 130px; justify-self: end"/>
@@ -160,7 +177,7 @@
         </div>
         <p:dialog header="#{learnController.learningDeck.title}" id="learnViewDialog" widgetVar="learnViewDialog"
                   modal="true" showEffect="fade"
-                  hideEffect="fade" resizable="false">
+                  hideEffect="fade" resizable="false" onHide="update()">
             <p:outputPanel style="align-items: center" id="cardData">
                 <p:panelGrid style="margin: auto !important;" columns="1">
                     <p>
@@ -187,7 +204,7 @@
                     <p:commandButton value="5" styleClass="rounded-button"
                                      action="#{learnController.setDifficulty(5)}"/>
                     <p:commandButton value="Next" styleClass="rounded-button"
-                                     action="#{learnController.doNext}" update=":cardData"/>
+                                     action="#{learnController.doNext}" update=":personalDeckForm:personalDeckTable :savedDeckForm:savedDeckTable"/>
                 </p:panelGrid>
             </p:outputPanel>
         </p:dialog>
