@@ -7,8 +7,8 @@
 
 /*Overwrite standard values*/
 
-.ui-menuitem-link {
-    color: var(--customUi-fontColorWhite) !important;
+.ui-menuitem-link{
+    color: var(--customUi-fontColorLightWhite) !important;
 }
 
 .ui-widget-header {
@@ -44,11 +44,6 @@
     border-bottom-color: var(--customUi-backgroundColor2) !important;
 }
 
-/*Inactive icon color*/
-.ui-menuitem-link{
-    color: var(--customUi-fontColorLightWhite) !important;
-}
-
 /*Active icon color*/
 .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem.ui-state-active a .ui-icon{
     color: var(--customUi-popupIconColor) !important;
@@ -58,6 +53,7 @@
 /* ----------- Buttons in the menu item, like the "Home, Save, Trash" in home ----------- */
 .ui-menu{
     background-color: var(--customUi-backgroundColor3) !important;
+    border-color: var(--customUi-borderColor1) !important;
 }
 
 .ui-menu .ui-menu-list .ui-menuitem .ui-menuitem-link .ui-menuitem-icon{
@@ -77,10 +73,6 @@
 /* ----------- The container in home that containes "Home, Explore, Admin Submenu" ----------- */
 .ui-menu.ui-menubar{
     background-color: var(--customUi-backgroundColor1) !important;
-}
-
-.ui-menu {
-    border-color: var(--customUi-borderColor1) !important;
 }
 
 /* ----------- Header like the element in home where the search bar is contained ----------- */
@@ -195,7 +187,7 @@ body .ui-paginator .ui-paginator-next, body .ui-paginator .ui-paginator-last{
 
 /* ----------- Lear cards popup ----------- */
 .ui-panelgrid .ui-panelgrid-cell{
-    background-color: var(--customUi-backgroundColor1) !important;
+    background-color: var(--customUi-backgroundColor3) !important;
     color: var(--customUi-fontColorWhite) !important;
     border: none !important;
     border-radius: 5px !important;
