@@ -29,13 +29,15 @@ public class DeckRepositoryTest {
     UserRepository userRepository;
 
     Deck copiedDeck = new Deck();
+    Deck copiedDeck3 = new Deck();
 
 
     @Test
     void findAllByCreator() {
         copiedDeck.setId(1L);
+        copiedDeck3.setId(4L);
 
-        assertEquals(List.of(copiedDeck), deckRepository.findAllByCreator(userRepository.findFirstByUsername("user1")));
+        assertEquals(List.of(copiedDeck, copiedDeck3), deckRepository.findAllByCreator(userRepository.findFirstByUsername("user1")));
     }
 
     @Test
@@ -45,8 +47,10 @@ public class DeckRepositoryTest {
         Deck copiedDeck02 = new Deck();
         copiedDeck02.setStatus(DeckStatus.PUBLIC);
         copiedDeck02.setId(3L);
+        copiedDeck3.setId(5L);
+        copiedDeck3.setStatus(DeckStatus.PUBLIC);
 
-        assertEquals(List.of(copiedDeck, copiedDeck02), deckRepository.findAllByStatusIsPublic());
+        assertEquals(List.of(copiedDeck, copiedDeck02, copiedDeck3), deckRepository.findAllByStatusIsPublic());
     }
 
     @Test

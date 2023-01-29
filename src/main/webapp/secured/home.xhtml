@@ -179,7 +179,7 @@
                   modal="true" showEffect="fade"
                   hideEffect="fade" resizable="false" onHide="update()">
             <p:outputPanel style="align-items: center" id="cardData">
-                <p:panelGrid style="margin: auto !important;" columns="1">
+                <p:panelGrid style="margin: 0px !important;" columns="1">
                     <p>
                         cards left: #{learnController.cardsToLearnAmount}<br/>
                         new cards: #{learnController.neverLearnedCardsAmount}
@@ -189,7 +189,7 @@
                     <p>#{learnController.currentlyDisplayedText}</p>
                 </p:panelGrid>
                 <p:commandButton value="Flip" styleClass="rounded-button"
-                                 action="#{learnController.doGetOtherSideOfCard}" update=":cardData"/>
+                                 action="#{learnController.doGetOtherSideOfCard}" update=":cardData" style="left: 44.3%"/>
                 <p:panelGrid columns="7">
                     <p:commandButton value="0" styleClass="rounded-button"
                                      action="#{learnController.setDifficulty(0)}"/>

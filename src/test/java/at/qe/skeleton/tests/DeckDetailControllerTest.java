@@ -10,14 +10,16 @@ import at.qe.skeleton.services.UserService;
 import at.qe.skeleton.ui.beans.SessionInfoBean;
 import at.qe.skeleton.ui.controllers.DeckDetailController;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import java.lang.reflect.Field;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,6 +55,7 @@ public class DeckDetailControllerTest {
     }
 
     @Test
+    @DirtiesContext
     public void testSetAndGetDeck() {
         Deck deck = new Deck();
         deckDetailController.setDeck(deck);
@@ -60,6 +63,7 @@ public class DeckDetailControllerTest {
     }
 
     @Test
+    @DirtiesContext
     public void testSetAndGetCards() {
         List<Card> cardList = new ArrayList<>();
         cardList.add(new Card());
@@ -72,6 +76,7 @@ public class DeckDetailControllerTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    @DirtiesContext
     public void testLoadDeckOnIdNULL() {
         User user = userService.getAllUsers().iterator().next();
         when(mockedSessionInfoBean.getCurrentUserName()).thenReturn(user.getUsername());
@@ -88,6 +93,7 @@ public class DeckDetailControllerTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    @DirtiesContext
     public void testLoadDeckOnIdNotNULL() {
         Deck deck = getDeckWithMinNumOfCards();
         when(mockedDeckService.loadDeck(any(Long.class))).then(invocationOnMock -> {
@@ -105,26 +111,32 @@ public class DeckDetailControllerTest {
         });
     }
 
-    @Disabled
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    @DirtiesContext
     public void testDoSaveDeck() {
+        try {
+        Field field = Class.forName("at.qe.skeleton.ui.controllers.DeckDetailController")
+                .getDeclaredField("deckService");
+        field.setAccessible(true);
+        field.set(deckDetailController, deckService);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
         Deck deck = getDeckWithMinNumOfCards();
-        when(mockedDeckService.loadDeck(any(Long.class))).then(invocationOnMock -> {
-            Long id = invocationOnMock.getArgument(0);
-            return deckService.loadDeck(id);
-        });
 
-        mockedDeckDetailController.loadDeck(deck.getId());
-        List<Card> cardList = mockedDeckDetailController.getDeck().getContent();
+        deckDetailController.loadDeck(deck.getId());
+        List<Card> cardList = deckDetailController.getDeck().getContent();
         int size = cardList.size();
         cardList.remove(0);
-        mockedDeckDetailController.doSaveDeck();
+        deckDetailController.doSaveDeck();
         assertEquals(size - 1, deckService.loadDeck(deck.getId()).getContent().size());
     }
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    @DirtiesContext
     public void testAddCardContainsAllPreviousCards() {
         Deck deck = getDeckWithMinNumOfCards();
         when(mockedDeckService.loadDeck(any(Long.class))).then(invocationOnMock -> {
@@ -144,6 +156,7 @@ public class DeckDetailControllerTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    @DirtiesContext
     public void testAddCardIncreasesSizeByOne() {
         Deck deck = getDeckWithMinNumOfCards();
         when(mockedDeckService.loadDeck(any(Long.class))).then(invocationOnMock -> {
@@ -158,7 +171,8 @@ public class DeckDetailControllerTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    public void testRemovecard() {
+    @DirtiesContext
+    public void testRemoveCard() {
         when(mockedDeckService.loadDeck(any(Long.class))).then(invocationOnMock -> {
             Long id = invocationOnMock.getArgument(0);
             return deckService.loadDeck(id);
@@ -192,7 +206,9 @@ public class DeckDetailControllerTest {
                 found = true;
             }
         }
-        if (!found) throw new IllegalStateException("No deck with more than 2 card found");
+        if (!found) {
+            throw new IllegalStateException("No deck with more than 2 card found");
+        }
         return deck;
     }
 }

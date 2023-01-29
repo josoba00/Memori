@@ -17,7 +17,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.management.InstanceAlreadyExistsException;
-import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,9 +62,8 @@ class DeckServiceTest {
     
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void loadDeckBySearch(){
-        String e = "e";
-        List<Deck> containgLetterE = deckService.getAllDecks().stream().filter(u -> u.getStatus().equals(DeckStatus.PUBLIC)).filter(u -> u.getTitle().toLowerCase().contains("e")).toList();
-        assertEquals(containgLetterE, deckService.loadDecksBySearch("e"));
+        List<Deck> containingLetterE = deckService.getAllDecks().stream().filter(u -> u.getStatus().equals(DeckStatus.PUBLIC)).filter(u -> u.getTitle().toLowerCase().contains("e")).toList();
+        assertEquals(containingLetterE, deckService.loadDecksBySearch("e"));
     }
 
     @Test
@@ -83,9 +81,9 @@ class DeckServiceTest {
         Deck toBeDeletedDeck = deckService.loadDeck(2L);
         assertEquals(copiedUser, toBeDeletedDeck.getCreator(), "user is not the creator of the proposed deck");
 
-        assertEquals(3, deckService.getAllDecks().size());
+        assertEquals(5, deckService.getAllDecks().size());
         deckService.deleteDeck(toBeDeletedDeck, copiedUser);
-        assertEquals(2, deckService.getAllDecks().size(), "deck has not been deleted");
+        assertEquals(4, deckService.getAllDecks().size(), "deck has not been deleted");
 
         assertFalse(deckService.getAllDecks().contains(toBeDeletedDeck));
     }
@@ -97,9 +95,9 @@ class DeckServiceTest {
         User unauthorised = userService.loadUser("user1");
         Deck toBeDeletedDeck = deckService.loadDeck(2L);
 
-        assertEquals(3, deckService.getAllDecks().size());
+        assertEquals(5, deckService.getAllDecks().size());
         deckService.deleteDeck(toBeDeletedDeck, unauthorised);
-        assertEquals(3, deckService.getAllDecks().size(), "There are missing Decks");
+        assertEquals(5, deckService.getAllDecks().size(), "There are missing Decks");
 
         assertTrue(deckService.getAllDecks().contains(toBeDeletedDeck));
     }
@@ -112,9 +110,9 @@ class DeckServiceTest {
         User adminUser = userService.loadUser("admin");
         Deck toBeDeletedDeck = deckService.loadDeck(2L);
 
-        assertEquals(3, deckService.getAllDecks().size());
+        assertEquals(5, deckService.getAllDecks().size());
         deckService.deleteDeck(toBeDeletedDeck, adminUser);
-        assertEquals(2, deckService.getAllDecks().size(), "There are missing Decks");
+        assertEquals(4, deckService.getAllDecks().size(), "There are missing Decks");
 
         assertFalse(deckService.getAllDecks().contains(toBeDeletedDeck));
     }
@@ -268,5 +266,27 @@ class DeckServiceTest {
         Deck deck = deckService.getAllDecks().stream().filter(u -> u.getStatus().equals(DeckStatus.PRIVATE)).toList().get(0);
 
         assertThrows(IllegalStateException.class, ()->deckService.setDeckStatusPrivate(deck));
+    }
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    void getCreatedDecks() {
+        User copiedUser = userService.loadUser("user2");
+        Deck copiedDeck = deckService.loadDeck(3L);
+        assertEquals(List.of(copiedDeck), deckService.getCreatedDecks(copiedUser));
+        copiedDeck.setStatus(DeckStatus.LOCKED);
+        deckService.saveDeck(copiedDeck);
+        copiedUser = userService.loadUser("user2");
+        assertEquals(0, deckService.getCreatedDecks(copiedUser).size());
+    }
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    void getBookmarkedDecks() {
+        User copiedUser = userService.loadUser("user2");
+        Deck copiedDeck = deckService.loadDeck(2L);
+        assertEquals(List.of(copiedDeck), deckService.getBookmarkedDecks(copiedUser));
+        copiedDeck.setStatus(DeckStatus.LOCKED);
+        deckService.saveDeck(copiedDeck);
+        copiedUser = userService.loadUser("user2");
+        assertEquals(0, deckService.getBookmarkedDecks(copiedUser).size());
     }
 }

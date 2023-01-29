@@ -111,4 +111,10 @@ public class DeckService {
         }
         deck.setStatus(DeckStatus.PRIVATE);
     }
+    public List<Deck> getCreatedDecks(User user){
+        return user.getCreatedDecks().stream().filter(deck->!deck.getStatus().equals(DeckStatus.LOCKED)).toList();
+    }
+    public List<Deck> getBookmarkedDecks(User user){
+        return user.getBookmarks().stream().filter(deck->!deck.getStatus().equals(DeckStatus.LOCKED)).toList();
+    }
 }
