@@ -27,8 +27,8 @@ If you want more information on how to set up mail trap to catch outgoing emails
 ## Project/Test Information
 
 ### Deployment
-Run the application with Maven using the Spring Boot plugin:
-`mvn spring-boot:run`
+First the setup for the email needs to be executed, otherwise an error will occur. After that run the application with Maven using the Spring Boot plugin:`mvn spring-boot:run`
+
 This command compiles the project, resolves all dependencies, and starts the embedded application server so the backend is available on the configured port.
 
 After that you can see the project by calling: `http://localhost:8080/`
