@@ -1,33 +1,37 @@
-
-<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
-                xmlns:f="http://java.sun.com/jsf/core"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/templates/main.xhtml">
-    <ui:param name="hideHeader" value="true" />
-    <ui:define name ="content">
+    <ui:param name="hideHeader" value="true"/>
+    <ui:define name="content">
         <head>
             <link rel="stylesheet" href="#{request.contextPath}/resources/css/headersAndMenuItems.css"/>
             <link rel="stylesheet" href="#{request.contextPath}/resources/css/background.css"/>
         </head>
-        <form id="login_form" action="#{request.contextPath}/login" method="post">                
+        <form id="login_form" action="#{request.contextPath}/login" method="post">
             <div style="display: flex; align-items: center">
                 <div style="width: 50%; background-color: #383838">
-                    <h:graphicImage value="\images\Memori_LoginLogo.PNG" style="width:50%; margin: 20% auto; display: block;" />
+                    <h:graphicImage value="\images\Memori_LoginLogo.PNG"
+                                    style="width:50%; margin: 20% auto; display: block;"/>
                 </div>
                 <div style="width: 35%; margin: auto 10% auto 5%">
-                    <form id="login_form" action="#{request.contextPath}/login" method="post" style="display: flex; flex-direction: column; align-items: center;">
-                        <p:staticMessage severity="error" summary="ERROR" detail="Username or password is wrong!" style="width: 100%; margin: 5% 5%" rendered="#{param.error != null}"/>
+                    <form id="login_form" action="#{request.contextPath}/login" method="post"
+                          style="display: flex; flex-direction: column; align-items: center;">
+                        <p:staticMessage severity="error" summary="ERROR" detail="Username or password is wrong!"
+                                         style="width: 100%; margin: 5% 5%" rendered="#{param.error != null}"/>
                         <br/>
                         <div style="display:grid; margin: auto 0% auto 10%;">
                             <p:outputLabel class="ui-custom-input-field-name" for="username" value="Username:"/>
-                            <p:inputText class="ui-custom-input-field-dark-grey" id="username" type="text" required="true"/>
-                            <p:outputLabel class="ui-custom-input-field-name ui-custom-input-field-name-margin" for="password" value="Password:" />
-                            <p:inputText class="ui-custom-input-field-dark-grey" id="password" type="password" required="true"/>
+                            <p:inputText class="ui-custom-input-field-dark-grey" id="username" type="text"
+                                         required="true"/>
+                            <p:outputLabel class="ui-custom-input-field-name ui-custom-input-field-name-margin"
+                                           for="password" value="Password:"/>
+                            <p:inputText class="ui-custom-input-field-dark-grey" id="password" type="password"
+                                         required="true"/>
                             <br/>
-                            <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                            <button type="submit"
+                                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
                                     style="width: 50%; height: 100%; margin: 10px auto 10px auto">
                                 <span>Login</span>
                             </button>

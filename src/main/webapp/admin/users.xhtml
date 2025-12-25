@@ -1,7 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -42,10 +40,11 @@
                     <p/>
                     <p:outputLabel for="createLastName" value="Last Name: "/>
                     <p:inputText id="createLastName" value="#{userBean.user.lastName}"/>
-                    <p />
+                    <p/>
                     <p:outputLabel for="createEmail" value="E-Mail: "/>
                     <p:inputText id="createEmail" value="#{userBean.user.email}" required="true">
-                        <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                        <f:validateRegex
+                                pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"/>
                         <p:ajax update="msgcreateEmail" event="blur"/>
                     </p:inputText>
                     <p:message for="createEmail" id="msgcreateEmail"/>
