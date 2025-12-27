@@ -11,36 +11,38 @@
         </head>
         <form id="login_form" action="#{request.contextPath}/login" method="post">
             <div style="display: flex; align-items: center">
+                <!-- Logo -->
                 <div style="width: 50%; background-color: #383838">
                     <h:graphicImage value="\images\Memori_LoginLogo.PNG"
                                     style="width:50%; margin: 20% auto; display: block;"/>
                 </div>
-                <div style="width: 35%; margin: auto 10% auto 5%">
-                    <form id="login_form" action="#{request.contextPath}/login" method="post"
-                          style="display: flex; flex-direction: column; align-items: center;">
+                <!-- Login Form -->
+                <div style="flex: 1; width: 100%; max-width: 500px; margin: auto;">
+                    <div style="display: flex; flex-direction: column; padding: 24px;">
                         <p:staticMessage severity="error" summary="ERROR" detail="Username or password is wrong!"
                                          style="width: 100%; margin: 5% 5%" rendered="#{param.error != null}"/>
                         <br/>
-                        <div style="display:grid; margin: auto 0% auto 10%;">
+                        <div style="display:grid; row-gap: 9px; width: 100%; max-width: 450px; margin: 20px auto 0 auto;">
+                            <!-- Username -->
                             <p:outputLabel class="ui-custom-input-field-name" for="username" value="Username:"/>
                             <p:inputText class="ui-custom-input-field-dark-grey" id="username" type="text"
                                          required="true"/>
+                            <!-- Password -->
                             <p:outputLabel class="ui-custom-input-field-name ui-custom-input-field-name-margin"
                                            for="password" value="Password:"/>
                             <p:inputText class="ui-custom-input-field-dark-grey" id="password" type="password"
                                          required="true"/>
                             <br/>
+
                             <button type="submit"
                                     class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
                                     style="width: 50%; height: 100%; margin: 10px auto 10px auto">
                                 <span>Login</span>
                             </button>
                         </div>
-
-                    </form>
+                    </div>
                 </div>
             </div>
-
         </form>
     </ui:define>
 </ui:composition>

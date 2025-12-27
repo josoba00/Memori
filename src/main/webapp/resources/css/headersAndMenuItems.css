@@ -7,20 +7,21 @@
 
 /*Overwrite standard values*/
 
-.ui-menuitem-link{
+.ui-menuitem-link {
     color: var(--customUi-fontColorLightWhite) !important;
 }
 
 .ui-widget-header {
     background-color: var(--customUi-backgroundColor2) !important;
 }
+
 .ui-tabmenu-nav:before {
     border-bottom-color: var(--customUi-borderColor1) !important;
 }
 
 
 /* ----------- Buttons like the login button ----------- */
-.ui-button{
+.ui-button {
     background-color: var(--customUi-button-background-color) !important;
     border-color: var(--customUi-button-border-color) !important;
     color: var(--customUi-fontColorBlack) !important;
@@ -35,9 +36,10 @@
     background-color: var(--customUi-backgroundColor2) !important;
     border-radius: 5px;
 }
-/*Currentyl selected button*/
+
+/* Currently selected button*/
 .ui-state-active {
-    background-color:  var(--customUi-backgroundColor1) !important;
+    background-color: var(--customUi-backgroundColor1) !important;
 }
 
 .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem {
@@ -45,18 +47,18 @@
 }
 
 /*Active icon color*/
-.ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem.ui-state-active a .ui-icon{
+.ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem.ui-state-active a .ui-icon {
     color: var(--customUi-popupIconColor) !important;
 }
 
 
 /* ----------- Buttons in the menu item, like the "Home, Save, Trash" in home ----------- */
-.ui-menu{
+.ui-menu {
     background-color: var(--customUi-backgroundColor3) !important;
     border-color: var(--customUi-borderColor1) !important;
 }
 
-.ui-menu .ui-menu-list .ui-menuitem .ui-menuitem-link .ui-menuitem-icon{
+.ui-menu .ui-menu-list .ui-menuitem .ui-menuitem-link .ui-menuitem-icon {
     color: var(--customUi-popupIconColor) !important;
 }
 
@@ -65,48 +67,49 @@
     background-color: var(--customUi-backgroundColor2) !important;
 }
 
-.ui-menu .ui-menu-list .ui-menu-child{
+.ui-menu .ui-menu-list .ui-menu-child {
     background-color: var(--customUi-backgroundColor2) !important;
 }
 
 
 /* ----------- The container in home that containes "Home, Explore, Admin Submenu" ----------- */
-.ui-menu.ui-menubar{
+.ui-menu.ui-menubar {
     background-color: var(--customUi-backgroundColor1) !important;
 }
 
 /* ----------- Header like the element in home where the search bar is contained ----------- */
-.ui-datatable .ui-datatable-header{
+.ui-datatable .ui-datatable-header {
     border-color: var(--customUi-backgroundColor2) !important;
 }
 
 /*Bottom border*/
-.ui-paginator{
+.ui-paginator {
     border-color: var(--customUi-backgroundColor2) !important;
 }
 
 /*Search field*/
-.ui-inputfield{
+.ui-inputfield {
     background-color: var(--customUi-backgroundColor3) !important;
     color: var(--customUi-fontColorWhite) !important;
 }
 
 /*Deck Title button*/
-.ui-datatable thead th{
+.ui-datatable thead th {
     background-color: var(--customUi-backgroundColor3) !important;
     color: var(--customUi-fontColorWhite) !important;
     border-width: 3px !important;
     border-color: var(--customUi-backgroundColor2) !important;
 }
+
 /*Hover settings*/
-.ui-datatable thead th.ui-state-hover{
+.ui-datatable thead th.ui-state-hover {
     background-color: var(--customUi-backgroundColor2) !important;
     border-color: var(--customUi-backgroundColor1) !important;
     border-width: 3px;
 }
 
 /*Found elements (where no decks found stand)*/
-.ui-datatable .ui-datatable-data > tr > td{
+.ui-datatable .ui-datatable-data > tr > td {
     border-color: var(--customUi-backgroundColor1) !important;
 }
 
@@ -123,23 +126,23 @@
 
 
 .ui-paginator .ui-paginator-first, body .ui-paginator .ui-paginator-prev,
-body .ui-paginator .ui-paginator-next, body .ui-paginator .ui-paginator-last{
+body .ui-paginator .ui-paginator-next, body .ui-paginator .ui-paginator-last {
     color: var(--customUi-fontColorLightWhite) !important;
 }
 
 /* ----------- Detail form (in create deck the text that says "title" and "description") ----------- */
-.ui-widget{
+.ui-widget {
     color: var(--customUi-fontColorWhite) !important;
 }
 
 /* ----------- PopUp ----------- */
 /*Title text*/
-.ui-dialog .ui-dialog-titlebar{
+.ui-dialog .ui-dialog-titlebar {
     color: var(--customUi-fontColorWhite) !important;
 }
 
 /*Upper background*/
-.ui-dialog .ui-dialog-footer{
+.ui-dialog .ui-dialog-footer {
     background-color: var(--customUi-backgroundColor3) !important;
 }
 
@@ -151,42 +154,41 @@ body .ui-paginator .ui-paginator-next, body .ui-paginator .ui-paginator-last{
 
 /* ----------- Search bar in explore decks ----------- */
 /*Text field*/
-.text{
+.text {
     border-color: var(--customUi-button-background-color) !important;
     background-color: var(--customUi-backgroundColor2) !important;
     color: var(--customUi-fontColorWhite) !important;
 }
 
 /*search button*/
-.submit{
+.submit {
     background-color: var(--customUi-button-background-color) !important;
 }
 
-
 /* ----------- Invalid session page ----------- */
 /*Upper element*/
-.ui-panel .ui-panel-titlebar{
+.ui-panel .ui-panel-titlebar {
     color: var(--customUi-fontColorWhite) !important;
     border-color: var(--customUi-backgroundColor3) !important;
 }
 
 /*Lower element*/
-.ui-panel .ui-panel-content{
+.ui-panel .ui-panel-content {
     background-color: var(--customUi-backgroundColor2) !important;
     color: var(--customUi-fontColorWhite) !important;
     border-color: var(--customUi-backgroundColor3) !important;
 }
 
 /*Login Button*/
-.ui-menu.ui-menubar > .ui-menu-list > .ui-menuitem{
+.ui-menu.ui-menubar > .ui-menu-list > .ui-menuitem {
     background-color: var(--customUi-button-background-color) !important;
     border-radius: 5px !important;
     margin: 0.1%;
+    margin-right: 6px;
 }
 
-
 /* ----------- Lear cards popup ----------- */
-.ui-panelgrid .ui-panelgrid-cell{
+.ui-panelgrid .ui-panelgrid-cell {
     background-color: var(--customUi-backgroundColor3) !important;
     color: var(--customUi-fontColorWhite) !important;
     border: none !important;
